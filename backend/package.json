@@ -1,0 +1,29 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "form-data": "^4.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "momment": "^0.0.1",
+    "mongodb": "^5.0.1",
+    "mongoose": "^6.10.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "razorpay": "^2.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
