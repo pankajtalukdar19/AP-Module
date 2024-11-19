@@ -141,7 +141,7 @@ const ApplicationsDetails = () => {
                             <hr />
                             <p className="m-0">Amount Paid : {totalPaymentAmount}</p>
                             <hr />
-                            <p className="m-0">Total Overdue : {(Number(totalInvoiceAmount) + Number(totalInterestAmount)) - Number(totalPaymentAmount)}</p>
+                            <p className="m-0"> Total Overdue: {((Number(totalInvoiceAmount) + Number(totalInterestAmount)) - Number(totalPaymentAmount)).toFixed(2)}</p>
                             <Button label="Payment Entry" type="button" className="p-mt-2" onClick={handlePaymentClick} />
                             <br/>
                             <Button label="New Month" type="button" className="p-mt-2"  onClick={handleNewMonth}/>
@@ -154,7 +154,7 @@ const ApplicationsDetails = () => {
                                 <Column field="vendorId.name" header="Vendor" sortable></Column>
                                 <Column field="invoiceAmount" header="Invoice Amount" sortable></Column>
                                 <Column field="interestAmount" header="Interest Amount" sortable></Column>
-                                <Column field="perdayInterestRate" header="Per Day Interest Rate" sortable></Column>
+                                {/* <Column field="perdayInterestRate" header="Per Day Interest Rate" sortable></Column> */}
                             </DataTable>
                         </TabPanel>
                         <TabPanel header="Payment Transactions">

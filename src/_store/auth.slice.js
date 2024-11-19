@@ -50,11 +50,7 @@ function createExtraActions() {
                 dispatch(alertActions.clear());
                 try {
                     const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password });
-
-                    // set auth user in redux state
                     dispatch(authActions.setAuth(user));
-
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('auth', JSON.stringify(user));
 
                     // get return url from location state or default to home page
@@ -73,6 +69,10 @@ function createExtraActions() {
             function (arg, { dispatch }) {
                 dispatch(authActions.setAuth(null));
                 localStorage.removeItem('auth');
+                localStorage.removeItem('user');
+                localStorage.removeItem('phoneNumber');
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
                 history.navigate('/account/login');
             }
         );

@@ -13,11 +13,15 @@ const login = (userData) => {
 const userUpdate = (userData) => {
   return axios.patch("/userupdate", userData);
 };
+const getUser = () => {
+  return axios.get("/user");
+};
 
 const authService = {
   signup,
   login,
-  userUpdate
+  userUpdate,
+  getUser
 };
 
 export default authService;

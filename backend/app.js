@@ -32,8 +32,7 @@ app.listen(PORT, () => {
     console.log('node js started at ' + PORT)
 })
 
-cron.schedule('*/50  * * * *   ', () => {
-    
+cron.schedule('*/50 * * * * ', () => {
     intresetController.interest();
     console.log("corn job working");
 });

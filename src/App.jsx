@@ -39,8 +39,8 @@ function App() {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="applications" element={<Applications />} />
                         <Route path="vendors" element={<Vendors />} />
-                        <Route path="applications/:id" element={<ApplicationsDetails />} />
                         <Route path="vendors/:id" element={<VendorsDetails />} />
+                        <Route path="applications/:id" element={<ApplicationsDetails />} />
                         <Route path="setting" element={<Setting />} />
                     </Route>
                     {/* public */}

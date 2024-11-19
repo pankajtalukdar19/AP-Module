@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { history } from '_helpers';
 import { userActions, alertActions } from '_store';
+import authService from 'service/authService';
 
 export { Register };
 
@@ -18,8 +19,8 @@ function Register() {
             .required('First Name is required'),
         lastName: Yup.string()
             .required('Last Name is required'),
-        username: Yup.string()
-            .required('Username is required'),
+        email: Yup.string()
+            .required('Email is required'),
         password: Yup.string()
             .required('Password is required')
             .min(6, 'Password must be at least 6 characters')
@@ -32,8 +33,9 @@ function Register() {
 
     async function onSubmit(data) {
         dispatch(alertActions.clear());
+        
         try {
-            await dispatch(userActions.register(data)).unwrap();
+            await authService.signup(data)
 
             // redirect to login page and display success alert
             history.navigate('/account/login');
@@ -59,9 +61,9 @@ function Register() {
                         <div className="invalid-feedback">{errors.lastName?.message}</div>
                     </div>
                     <div className="mb-3">
-                        <label className="form-label">Username</label>
-                        <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                        <div className="invalid-feedback">{errors.username?.message}</div>
+                        <label className="form-label">Email</label>
+                        <input name="email" type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                        <div className="invalid-feedback">{errors.email?.message}</div>
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Password</label>

@@ -90,16 +90,14 @@ module.exports = {
         }
     },
     getUser: async (req, res) => {
-        let defaultLang = req.headers.defaultlang ? req.headers.defaultlang : 'en';
-        let reqData = req.body ? req.body : {};
         try {
              
-           const data = await User.findById(reqData._id).select('_id email role firstName lastName status createdAt updatedAt refreshTokens type');
+           const data = await User.find().select('_id email role firstName lastName status createdAt updatedAt refreshTokens type');
     
-            return res.status(201).json({ success: true, data, msg: "Profile updated successfully", lang: defaultLang });
+            return res.status(201).json({ success: true, data, msg: "Profile updated successfully",});
         } catch (err) {
             console.error("Error updating profile:", err);
-            return res.status(500).json({ success: false, msg: "Something went wrong", error: err.message, lang: defaultLang });
+            return res.status(500).json({ success: false, msg: "Something went wrong", error: err.message, });
         }
     }
 

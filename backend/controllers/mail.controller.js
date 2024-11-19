@@ -92,8 +92,8 @@ const sendToD2RHMG = async (data) => {
         </tr>
         <tr>
           <td align="center" style="padding: 20px;">
-            <a href="http://15.207.107.98:3000/approve?id=${data.savedEntryId._id}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;"> Approve </a>
-            <a href="http://15.207.107.98:3000/reject?id=${data.savedEntryId._id}" style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;"> Reject </a>
+            <a href="http://52.66.242.4/approve?id=${data.savedEntryId._id}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;"> Approve </a>
+            <a href="http://52.66.242.4/reject?id=${data.savedEntryId._id}" style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;"> Reject </a>
           </td>
         </tr>
         <tr>
@@ -215,13 +215,13 @@ module.exports = {
         mailContent += `</table></td></tr>
                                                         <tr>
                                                             <td align="center" style="padding: 20px;">
-                                                                <a href="http://15.207.107.98:3000/approve?id=${savedEntry._id}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+                                                                <a href="http://52.66.242.4/approve?id=${savedEntry._id}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;">
                                                                     Approve
                                                                 </a>
-                                                                <a href="http://15.207.107.98:3000/reject?id=${savedEntry._id}" style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+                                                                <a href="http://52.66.242.4/reject?id=${savedEntry._id}" style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: #fff; text-decoration: none; border-radius: 4px; margin-right: 10px;">
                                                                     Reject
                                                                 </a>
-                                                                <a href="http://15.207.107.98:3000/edit?id=${savedEntry._id}&date=${encodeURIComponent(date)}&department=${encodeURIComponent(department)}&dueDate=${encodeURIComponent(dueDate)}&invoiceAmount=${encodeURIComponent(invoiceAmount)}&invoiceNumber=${encodeURIComponent(invoiceNumber)}&paymentCondition=${encodeURIComponent(paymentCondition)}&vendorName=${encodeURIComponent(vendorName)}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">
+                                                                <a href="http://52.66.242.4/edit?id=${savedEntry._id}&date=${encodeURIComponent(date)}&department=${encodeURIComponent(department)}&dueDate=${encodeURIComponent(dueDate)}&invoiceAmount=${encodeURIComponent(invoiceAmount)}&invoiceNumber=${encodeURIComponent(invoiceNumber)}&paymentCondition=${encodeURIComponent(paymentCondition)}&vendorName=${encodeURIComponent(vendorName)}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px;">
                                                                     Edit
                                                                 </a>
                                                             </td>
