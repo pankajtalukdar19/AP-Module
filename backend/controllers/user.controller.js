@@ -1,104 +1,227 @@
-
-const User = require('../models/user.schema');
-const crypto = require('crypto');
+const user = require("../models/user.model");
+const mongoose = require("mongoose");
 
 module.exports = {
-    login: async (req, res) => {
-        let defaultLang = req.headers.defaultlang ? req.headers.defaultlang : 'en';
-        try {
-            let reqData = req.body ? req.body : {};
+  create: async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-            if (reqData.email) {
-                reqData.email = reqData.email.toLowerCase();
-                reqData.password = String(reqData.password);
-            }
+    try {
+      const { email, phoneNumber, name, role } = req.body;
 
-            const userFindOneRes = await User.findOne({email: req.body.email}).sort({ createdAt: -1 });
+      if (!email || !name || !role) {
+        return res.status(400).json({
+          success: false,
+          msg: "Required fields missing",
+        });
+      }
 
-            if (!userFindOneRes) {
-                return res.status(400).json({ success: false, msg: "Please create a new account to login." });
-            }
-
-            let password = crypto.pbkdf2Sync(reqData.password, userFindOneRes.salt, 1000, 64, 'sha512').toString('hex');
-            let query = { email: reqData.email, password: password };
-
-            let userRes = await User.findOne(query).sort({ createdAt: -1 }).select('-password -salt');
-
-
-            if (!userRes) {
-                return res.status(400).json({ success: false, msg: "The email address or password does not exist", msg2: "The email address/ password you have entered does not appear to exist. Please check your entry and try again. ", lang: defaultLang });
-            }
-
-            if (userRes.status == 0) {
-                return res.status(400).send({
-                    success: false,
-                    pending_verification: true,
-                    msg: "Account verification is pending. Please check your email and click the link mentioned to verify your email. ",
-                });
-            }
-
-            let token = userRes.generateJwt();
-            const user = await User.findById(userRes._id).select('_id email firstname lastname phone role status createdAt updatedAt refreshTokens type is_admin');
-            let data = { user, token };
-
-            console.log({data});
-
-            return res.status(201).json({ success: true, data, msg: "You have logged in successfully", lang: defaultLang });
+      if (email && email.trim() !== "") {
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+          return res.status(400).json({
+            success: false,
+            msg: "Invalid email format.",
+          });
         }
-        catch (err) {
-            res.status(422).json({ success: false, error: err.message ? err.message : err, msg: "resMessage[defaultLang].Something_Went_Wrong", lang: defaultLang });
-        }
-    },
+      }
 
-    signup: async (req, res) => {
-        let defaultLang = req.headers.defaultlang ? req.headers.defaultlang : 'en';
-        try {
-            let reqData = req.body ? req.body : {};
-            const exist = await User.findOne({ "email": reqData.email, "isDeleted": false });
-            if (exist) {
-                return res.status(400).json({ success: false, msg: "resMessage[defaultLang].Email_Exist", lang: defaultLang })
-            }
+      // Check if user already exists
+      const existingUser = await user.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          msg:
+            existingUser.email === email
+              ? "User with this email already exists"
+              : "User with this phone number already exists",
+        });
+      }
 
-            let user = new User(reqData);
-            const createdUser = await user.save();
+      const userData = {
+        phoneNumber,
+        name,
+        role,
+        email,
+      };
 
-            const data = await User.findByIdAndUpdate(createdUser._id, { new: true }).select('_id email role firstName lastName status createdAt updatedAt refreshTokens type');
+      // Create and save the user
+      const newUser = new user(userData);
+      const savedUser = await newUser.save({ session });
 
-            return res.status(201).json({ success: true, data, msg: "resMessage[defaultLang].Signup_Success", lang: defaultLang })
-        } catch (err) {
-            return res.status(500).json({ success: false, msg: "resMessage[defaultLang].Something_Went_Wrong", error: err.message, lang: defaultLang })
-        }
-    },
-    userUpdate: async (req, res) => {
-        let defaultLang = req.headers.defaultlang ? req.headers.defaultlang : 'en';
-       
-        try {
-            console.log('res', res);
-            let reqData = req.body ? req.body : {};
-            // Construct update object dynamically
-            let updateObject = {new: false};
-            for (let key in reqData) {
-                updateObject[key] = reqData[key];
-            }
-            // Update the user document
-            await User.findByIdAndUpdate(reqData._id, updateObject).select('firstname lastname phone');
-    
-            return res.status(201).json({ success: true, data: reqData, msg: "Profile updated successfully", lang: defaultLang });
-        } catch (err) {
-            console.error("Error updating profile:", err);
-            return res.status(500).json({ success: false, msg: "Something went wrong", error: err.message, lang: defaultLang });
-        }
-    },
-    getUser: async (req, res) => {
-        try {
-             
-           const data = await User.find().select('_id email role firstName lastName status createdAt updatedAt refreshTokens type');
-    
-            return res.status(201).json({ success: true, data, msg: "Profile updated successfully",});
-        } catch (err) {
-            console.error("Error updating profile:", err);
-            return res.status(500).json({ success: false, msg: "Something went wrong", error: err.message, });
-        }
+      // Commit the transaction
+      await session.commitTransaction();
+      session.endSession();
+
+      return res.status(201).json({
+        success: true,
+        msg: "User details saved successfully",
+        data: savedUser,
+      });
+    } catch (err) {
+      // Rollback transaction on error
+      await session.abortTransaction();
+      session.endSession();
+
+      console.error("Error in user creation:", err);
+
+      return res.status(500).json({
+        success: false,
+        msg: "An error occurred while creating the user.",
+        error: err.message,
+      });
     }
+  },
+  getAll: async (req, res) => {
+    try {
+      const data = await user.find();
 
-}
+      if (data.length === 0) {
+        return res.status(404).json({ success: false, msg: "No user found" });
+      }
+      return res
+        .status(200)
+        .json({ success: true, msg: "user data fetched successfully", data });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        msg: "Something went wrong",
+        error: err.message,
+      });
+    }
+  },
+
+  getUserById: async (req, res) => {
+    try {
+      const data = await user.findOne({ _id: req.params.id });
+
+      if (!data) {
+        return res.status(404).json({
+          success: false,
+          msg: "User not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        msg: "User details updated successfully",
+        data,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        msg: "Something went wrong",
+        error: err.message,
+      });
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      // Check if user exists
+      const fiendedUser = await user.findById(userId);
+      if (!fiendedUser) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      // Delete the user
+      await user.findByIdAndDelete(userId);
+
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete user",
+        error: error.message,
+      });
+    }
+  },
+  updateUser: async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const { userId } = req.params;
+      const updateData = req.body;
+
+      // Validate userId
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "User ID is required",
+        });
+      }
+
+      // Check if the user exists
+      const foundUser = await user.findById(userId).session(session);
+      if (!foundUser) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      // Check if the email is already in use by another user
+      if (updateData.email) {
+        const existingUser = await user
+          .findOne({
+            _id: { $ne: userId },
+            email: updateData.email,
+          })
+          .session(session);
+
+        if (existingUser) {
+          return res.status(400).json({
+            success: false,
+            message: "Email already in use by another user",
+          });
+        }
+      }
+
+      // Prevent role modification
+      if (updateData.role && updateData.role !== foundUser.role) {
+        return res.status(400).json({
+          success: false,
+          message: "Role cannot be changed through this endpoint",
+        });
+      }
+
+      // Update user details
+      const updatedUser = await user.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            name: updateData.name,
+            phoneNumber: updateData.phoneNumber,
+          },
+        },
+        { new: true, session }
+      );
+
+      // Commit the transaction
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        data: updatedUser,
+      });
+    } catch (error) {
+      // Rollback transaction on error
+      await session.abortTransaction();
+      session.endSession();
+      res.status(500).json({
+        success: false,
+        message: "Failed to update user",
+        error: error.message,
+      });
+    }
+  },
+};
