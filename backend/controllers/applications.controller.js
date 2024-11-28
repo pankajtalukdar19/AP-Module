@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer");
 const application = require("../models/applications.model");
 const moment = require("moment");
 const template = require("../service/template");
+const settings = require("../models/settings.model");
 module.exports = {
   getDataById: async (req, res) => {
     try {
@@ -88,7 +89,7 @@ module.exports = {
         vendorName,
       } = req.body;
 
-      const keys = await key.find()
+      const keys = await settings.find()
 
       const vendorDetails = await vendor.findOne({ _id: vendorName });
 
@@ -101,12 +102,10 @@ module.exports = {
         let transporter = nodemailer.createTransport({
           service: 'gmail',
           auth: {
-            user: keys[0]?.username,
-            pass: keys[0]?.key,
+            user: keys.SMTP_FROM,
+            pass: keys.SMTP_KEY,
           }
         });
-
-        let mailContent = template(department, invoiceNumber, invoiceDate, paymentDate, dueDate, vendorDetails, invoiceAmount, paymentCondition, partialRatio1, partialRatio2, savedEntry.calculatedInvoiceAmount);
 
         const emailContent = template({
           department,
