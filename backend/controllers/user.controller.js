@@ -113,6 +113,7 @@ module.exports = {
   getUserById: async (req, res) => {
     try {
       const data = await user.findOne({ _id: req.params.id });
+      console.log("data", data);
 
       if (!data) {
         return res.status(404).json({
