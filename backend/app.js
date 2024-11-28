@@ -6,6 +6,7 @@ const indexRouter = require("./routes/index.route");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 require("./config/db");
+const InterestService = require("./services/interest.service");
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -47,6 +48,9 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
+
+// Initialize interest calculation cron jobs
+InterestService.initCronJobs();
 
 app.listen(PORT, () => {
   console.log("node js started at " + PORT);

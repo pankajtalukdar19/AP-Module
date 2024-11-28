@@ -41,10 +41,6 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     refreshToken: String,
-    vendorProfile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "VendorProfile",
-    },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   },
