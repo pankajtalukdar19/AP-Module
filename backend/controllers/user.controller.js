@@ -1,6 +1,8 @@
 const user = require("../models/user.model");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 module.exports = {
   create: async (req, res) => {
@@ -8,9 +10,14 @@ module.exports = {
     session.startTransaction();
 
     try {
-      const { email, phoneNumber, name, role, password } = req.body;
+      const { email, phoneNumber, name, businessName, businessType, status } =
+        req.body;
+      let password = req.body?.password;
+      if (!req.body?.password) {
+        password = "12345678";
+      }
 
-      if (!email || !name || !role || !password) {
+      if (!email || !name || !password) {
         return res.status(400).json({
           success: false,
           msg: "Required fields missing",
@@ -45,8 +52,11 @@ module.exports = {
       const userData = {
         phoneNumber,
         name,
-        role,
+        role: "vendor",
         email,
+        businessName,
+        businessType,
+        status,
         password: hashedPassword,
       };
 
@@ -209,6 +219,9 @@ module.exports = {
           $set: {
             name: updateData.name,
             phoneNumber: updateData.phoneNumber,
+            businessName: updateData.businessName,
+            businessType: updateData.businessType,
+            status: updateData.status,
           },
         },
         { new: true, session }
@@ -230,6 +243,123 @@ module.exports = {
       res.status(500).json({
         success: false,
         message: "Failed to update user",
+        error: error.message,
+      });
+    }
+  },
+  forgotPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          msg: "Email is required",
+        });
+      }
+
+      // Find user by email
+      const foundUser = await user.findOne({ email });
+      if (!foundUser) {
+        return res.status(404).json({
+          success: false,
+          msg: "User not found with this email",
+        });
+      }
+
+      // Generate reset token
+      const resetToken = crypto.randomBytes(32).toString("hex");
+      const resetTokenExpiry = Date.now() + 3600000; // Token valid for 1 hour
+
+      // Save reset token to user
+      foundUser.resetPasswordToken = resetToken;
+      foundUser.resetPasswordExpires = resetTokenExpiry;
+      await foundUser.save();
+
+      // Create email transporter
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+
+      // Reset password URL
+      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+      // Send email
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM,
+        to: email,
+        subject: "Password Reset Request",
+        html: `
+          <p>You requested a password reset</p>
+          <p>Click this <a href="${resetUrl}">link</a> to reset your password</p>
+          <p>This link will expire in 1 hour</p>
+          <p>If you didn't request this, please ignore this email</p>
+        `,
+      });
+
+      res.status(200).json({
+        success: true,
+        msg: "Password reset link sent to email",
+      });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({
+        success: false,
+        msg: "Error in forgot password process",
+        error: error.message,
+      });
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return res.status(400).json({
+          success: false,
+          msg: "Token and new password are required",
+        });
+      }
+
+      // Find user with valid reset token
+      const foundUser = await user.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+
+      if (!foundUser) {
+        return res.status(400).json({
+          success: false,
+          msg: "Invalid or expired reset token",
+        });
+      }
+
+      // Hash new password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Update user password and clear reset token
+      foundUser.password = hashedPassword;
+      foundUser.resetPasswordToken = undefined;
+      foundUser.resetPasswordExpires = undefined;
+      await foundUser.save();
+
+      res.status(200).json({
+        success: true,
+        msg: "Password reset successful",
+      });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      res.status(500).json({
+        success: false,
+        msg: "Error in reset password process",
         error: error.message,
       });
     }

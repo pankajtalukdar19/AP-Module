@@ -16,4 +16,17 @@ export const authApi = {
       refreshToken,
     });
   },
+
+  forgotPassword: async (email: string) => {
+    return await api.post<ApiResponse<void>>("/user/forgot-password", {
+      email,
+    });
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    return await api.post<ApiResponse<void>>("/user/reset-password", {
+      token,
+      newPassword,
+    });
+  },
 };

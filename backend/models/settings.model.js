@@ -2,15 +2,30 @@ const mongoose = require("mongoose");
 
 const settingsSchema = new mongoose.Schema(
   {
-    email: {
-      required: false,
-      type: String,
-      trim: true,
-    },
     intrestRate: {
       type: Number,
       required: true,
       default: 0.001,
+    },
+    SMTP_HOST: {
+      type: String,
+      required: true,
+    },
+    SMTP_PORT: {
+      type: Number,
+      required: true,
+    },
+    SMTP_USER: {
+      type: String,
+      required: true,
+    },
+    SMTP_PASSWORD: {
+      type: String,
+      required: true,
+    },
+    SMTP_FROM: {
+      type: String,
+      required: true,
     },
   },
   {

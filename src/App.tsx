@@ -15,6 +15,8 @@ import PaymentsPage from "./pages/admin/PaymentsPage";
 import MyInterestPage from "./pages/vendors/MyInterestPage";
 import MyApplicationPage from "./pages/vendors/MyApplicationPage";
 import MyPaymentsPage from "./pages/vendors/MyPaymentsPage";
+import ForgotPassword from "@components/auth/ForgotPassword";
+import ResetPassword from "@components/auth/ResetPassword";
 
 function App() {
   return (
@@ -46,6 +48,8 @@ function App() {
       {/* Auth Layout */}
       <Route element={<AuthLayout />}>
         <Route path="login" element={<LoginForm />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
       </Route>
 
       {/* Error Pages */}

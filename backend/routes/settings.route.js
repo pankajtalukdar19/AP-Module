@@ -3,7 +3,10 @@ const route = express.Router();
 const settingsController = require("../controllers/settings.controller");
 const { auth } = require("../middleware/auth.middleware");
 
-route.post("/", auth, settingsController.create);
-route.get("/", auth, settingsController.getAll);
-route.put("/:id", auth, settingsController.update);
+// Protect all settings routes with admin authentication
+route.use(auth);
+
+route.get("/", settingsController.getSettings);
+route.put("/", settingsController.updateSettings);
+
 module.exports = route;

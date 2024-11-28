@@ -4,6 +4,7 @@ import { Button } from "primereact/button";
 import { Message } from "primereact/message";
 import { useAuth } from "../../hooks/useAuth";
 import { Password } from "primereact/password";
+import { Link } from "react-router-dom";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -19,23 +20,24 @@ function LoginForm() {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
         minHeight: "90vh",
-        justifyContent: "space-between",
         alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <div className="text-center my-5">
-        <h2 className="text-3xl font-bold m-0 mb-4">Login</h2>
-        <p className="text-600 mt-0 mb-4">Sign in to continue</p>
-      </div>
-
       <form
         onSubmit={handleSubmit}
-        className="flex flex-column gap-3"
+        className="p-card p-3 gap-3"
         style={{ width: "95%", maxWidth: "400px" }}
       >
-        <div className="p-float-label">
+        {error && <Message severity="error" text={error} />}
+        <div className="text-center my-5">
+          <h2 className="text-3xl font-bold m-0 mb-4">Login</h2>
+          <p className="text-600 mt-0 mb-4">Sign in to continue</p>
+        </div>
+
+        <div className="field">
+          <label htmlFor="email">Email</label>
           <InputText
             id="email"
             value={email}
@@ -43,10 +45,8 @@ function LoginForm() {
             className="w-full"
             disabled={isLoading}
           />
-          <label htmlFor="email">Email</label>
         </div>
-
-        <div className="p-float-label">
+        <div className="field">
           <Password
             id="password"
             value={password}
@@ -57,16 +57,17 @@ function LoginForm() {
             disabled={isLoading}
             toggleMask
           />
-          <label htmlFor="password">Password</label>
         </div>
 
-        {error && <Message severity="error" text={error} />}
-        <Button
-          type="submit"
-          label="Login"
-          loading={isLoading}
-          disabled={!email || !password}
-        />
+        <div>
+          <Button
+            type="submit"
+            label="Login"
+            loading={isLoading}
+            disabled={!email || !password}
+          />
+        </div>
+        <Link to="/forgot-password">Forgot Password?</Link>
       </form>
     </div>
   );

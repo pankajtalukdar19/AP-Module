@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import NodataFound from "@components/NodataFound";
 import { vendorsApi } from "@api/vendors.api";
+import { Dropdown } from "primereact/dropdown";
 
 interface Vendor {
   _id: string;
@@ -33,7 +34,80 @@ function VendorsPage() {
     phoneNumber: "",
     businessName: "",
     businessType: "",
+    status: "active",
   });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    businessName: "",
+    businessType: "",
+    status: "",
+  });
+
+  const statusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+    { label: "Suspended", value: "suspended" },
+  ];
+
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      phoneNumber: "",
+      businessName: "",
+      businessType: "",
+      status: "",
+    };
+    let isValid = true;
+
+    // Name validation
+    if (!formData?.name?.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+
+    // Email validation
+    if (!formData?.email?.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+      isValid = false;
+    }
+
+    // Phone validation
+    if (!formData?.phoneNumber?.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+      isValid = false;
+    } else if (!/^\+?[\d\s-]{10,}$/.test(formData.phoneNumber.trim())) {
+      newErrors.phoneNumber = "Invalid phone number format";
+      isValid = false;
+    }
+
+    // Business name validation
+    if (!formData?.businessName?.trim()) {
+      newErrors.businessName = "Business name is required";
+      isValid = false;
+    }
+
+    // Business type validation
+    if (!formData?.businessType?.trim()) {
+      newErrors.businessType = "Business type is required";
+      isValid = false;
+    }
+
+    // Status validation
+    if (!formData.status) {
+      newErrors.status = "Status is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   useEffect(() => {
     loadVendors();
@@ -56,6 +130,15 @@ function VendorsPage() {
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Validation Error",
+        detail: "Please check the form for errors",
+      });
+      return;
+    }
+
     try {
       if (editingVendor) {
         await vendorsApi.updateVendor(editingVendor._id, formData);
@@ -126,6 +209,15 @@ function VendorsPage() {
               phoneNumber: rowData.phoneNumber,
               businessName: rowData.businessName,
               businessType: rowData.businessType,
+              status: rowData.status,
+            });
+            setErrors({
+              name: "",
+              email: "",
+              phoneNumber: "",
+              businessName: "",
+              businessType: "",
+              status: "",
             });
             setDialogVisible(true);
           }}
@@ -138,6 +230,30 @@ function VendorsPage() {
           onClick={() => confirmDelete(rowData)}
         />
       </div>
+    );
+  };
+
+  const statusBodyTemplate = (rowData: Vendor) => {
+    const getSeverity = (status: string) => {
+      switch (status) {
+        case "active":
+          return "success";
+        case "inactive":
+          return "warning";
+        case "suspended":
+          return "danger";
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <span
+        className={`p-badge p-badge-${getSeverity(rowData.status)}`}
+        style={{ textTransform: "capitalize" }}
+      >
+        {rowData.status}
+      </span>
     );
   };
 
@@ -159,6 +275,15 @@ function VendorsPage() {
               phoneNumber: "",
               businessName: "",
               businessType: "",
+              status: "active",
+            });
+            setErrors({
+              name: "",
+              email: "",
+              phoneNumber: "",
+              businessName: "",
+              businessType: "",
+              status: "",
             });
             setDialogVisible(true);
           }}
@@ -177,7 +302,12 @@ function VendorsPage() {
         <Column field="phoneNumber" header="Phone" />
         <Column field="businessName" header="Business Name" sortable />
         <Column field="businessType" header="Business Type" />
-        <Column field="status" header="Status" sortable />
+        <Column
+          field="status"
+          header="Status"
+          sortable
+          body={statusBodyTemplate}
+        />
         <Column
           body={actionBodyTemplate}
           header="Actions"
@@ -199,59 +329,102 @@ function VendorsPage() {
             <InputText
               id="name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => {
+                setFormData((prev) => ({ ...prev, name: e.target.value }));
+                if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
+              }}
+              className={errors.name ? "p-invalid" : ""}
             />
+            {errors.name && <small className="p-error">{errors.name}</small>}
           </div>
           <div className="field">
             <label htmlFor="email">Email</label>
             <InputText
               id="email"
               value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
+              disabled
+              onChange={(e) => {
+                setFormData((prev) => ({ ...prev, email: e.target.value }));
+                if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+              }}
+              className={errors.email ? "p-invalid" : ""}
             />
+            {errors.email && <small className="p-error">{errors.email}</small>}
           </div>
           <div className="field">
             <label htmlFor="phone">Phone Number</label>
             <InputText
               id="phone"
               value={formData.phoneNumber}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
                   phoneNumber: e.target.value,
-                }))
-              }
+                }));
+                if (errors.phoneNumber)
+                  setErrors((prev) => ({ ...prev, phoneNumber: "" }));
+              }}
+              className={errors.phoneNumber ? "p-invalid" : ""}
             />
+            {errors.phoneNumber && (
+              <small className="p-error">{errors.phoneNumber}</small>
+            )}
           </div>
           <div className="field">
             <label htmlFor="businessName">Business Name</label>
             <InputText
               id="businessName"
               value={formData.businessName}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
                   businessName: e.target.value,
-                }))
-              }
+                }));
+                if (errors.businessName)
+                  setErrors((prev) => ({ ...prev, businessName: "" }));
+              }}
+              className={errors.businessName ? "p-invalid" : ""}
             />
+            {errors.businessName && (
+              <small className="p-error">{errors.businessName}</small>
+            )}
           </div>
           <div className="field">
             <label htmlFor="businessType">Business Type</label>
             <InputText
               id="businessType"
               value={formData.businessType}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prev) => ({
                   ...prev,
                   businessType: e.target.value,
-                }))
-              }
+                }));
+                if (errors.businessType)
+                  setErrors((prev) => ({ ...prev, businessType: "" }));
+              }}
+              className={errors.businessType ? "p-invalid" : ""}
             />
+            {errors.businessType && (
+              <small className="p-error">{errors.businessType}</small>
+            )}
+          </div>
+          <div className="field">
+            <label htmlFor="status">Status</label>
+            <Dropdown
+              id="status"
+              value={formData.status}
+              options={statusOptions}
+              onChange={(e) => {
+                setFormData((prev) => ({ ...prev, status: e.value }));
+                if (errors.status)
+                  setErrors((prev) => ({ ...prev, status: "" }));
+              }}
+              className={errors.status ? "p-invalid" : ""}
+              placeholder="Select Status"
+            />
+            {errors.status && (
+              <small className="p-error">{errors.status}</small>
+            )}
           </div>
         </div>
         <div className="flex justify-content-end gap-2 mt-4">
