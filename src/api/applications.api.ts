@@ -4,4 +4,8 @@ export const applicationsApi = {
     const response = await api.get("/applications");
     return response.data;
   },
+  submitApplications: async () => {
+    const response = await api.post("/applications");
+    return response.data;
+  },
 };
