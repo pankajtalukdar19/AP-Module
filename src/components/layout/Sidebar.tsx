@@ -48,7 +48,7 @@ function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
 
           <div className="sidebar-content">
             <nav className="sidebar-menu">
-              {menuItems.map((item) => (
+              {menuItems?.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}

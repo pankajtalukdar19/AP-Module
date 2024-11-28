@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     refreshToken: String,
+    vendorProfile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "VendorProfile",
+    },
   },
   {
     timestamps: true,

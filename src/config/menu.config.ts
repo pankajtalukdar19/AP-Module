@@ -44,7 +44,7 @@ export const menuConfig = {
     },
     {
       label: "Interest",
-      icon: "pi pi-percent",
+      icon: "pi pi-money-bill",
       to: "/interest",
     },
     {

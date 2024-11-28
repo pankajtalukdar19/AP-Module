@@ -14,7 +14,7 @@ function DashboardLayout() {
     const allMenuItems = [...menuConfig.vendor, ...menuConfig.admin];
 
     // Find matching route and return its label
-    const matchingRoute = allMenuItems.find(
+    const matchingRoute = allMenuItems?.find(
       (item) => item.to === location.pathname
     );
     return matchingRoute?.label || "Dashboard";

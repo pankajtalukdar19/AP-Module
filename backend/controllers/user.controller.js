@@ -1,5 +1,6 @@
 const user = require("../models/user.model");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   create: async (req, res) => {
@@ -7,9 +8,9 @@ module.exports = {
     session.startTransaction();
 
     try {
-      const { email, phoneNumber, name, role } = req.body;
+      const { email, phoneNumber, name, role, password } = req.body;
 
-      if (!email || !name || !role) {
+      if (!email || !name || !role || !password) {
         return res.status(400).json({
           success: false,
           msg: "Required fields missing",
@@ -37,16 +38,25 @@ module.exports = {
         });
       }
 
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
       const userData = {
         phoneNumber,
         name,
         role,
         email,
+        password: hashedPassword,
       };
 
       // Create and save the user
       const newUser = new user(userData);
       const savedUser = await newUser.save({ session });
+
+      // Remove password from response
+      const userResponse = savedUser.toObject();
+      delete userResponse.password;
 
       // Commit the transaction
       await session.commitTransaction();
@@ -55,7 +65,7 @@ module.exports = {
       return res.status(201).json({
         success: true,
         msg: "User details saved successfully",
-        data: savedUser,
+        data: userResponse,
       });
     } catch (err) {
       // Rollback transaction on error
@@ -73,7 +83,7 @@ module.exports = {
   },
   getAll: async (req, res) => {
     try {
-      const data = await user.find();
+      const data = await user.find({ role: "vendor" });
 
       if (data.length === 0) {
         return res.status(404).json({ success: false, msg: "No user found" });

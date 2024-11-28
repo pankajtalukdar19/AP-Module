@@ -1,3 +1,5 @@
+import moment from "moment";
+
 type convertObjToStringProps = { [k: string]: any } | undefined;
 
 export const convertObjToString = (payload: convertObjToStringProps) => {
@@ -35,4 +37,8 @@ export const twoDecimalPoints = (value: number) => {
     return value.toFixed(2);
   }
   return "0.00";
+};
+
+export const formatDate = (date: string) => {
+  return moment(date).format("DD/MM/YYYY");
 };
