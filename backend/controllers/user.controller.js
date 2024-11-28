@@ -8,9 +8,14 @@ module.exports = {
     session.startTransaction();
 
     try {
-      const { email, phoneNumber, name, role, password } = req.body;
+      const { email, phoneNumber, name, businessName, businessType, status } =
+        req.body;
+      let password = req.body?.password;
+      if (!req.body?.password) {
+        password = "12345678";
+      }
 
-      if (!email || !name || !role || !password) {
+      if (!email || !name || !password) {
         return res.status(400).json({
           success: false,
           msg: "Required fields missing",
@@ -45,8 +50,11 @@ module.exports = {
       const userData = {
         phoneNumber,
         name,
-        role,
+        role: "vendor",
         email,
+        businessName,
+        businessType,
+        status,
         password: hashedPassword,
       };
 
@@ -209,6 +217,9 @@ module.exports = {
           $set: {
             name: updateData.name,
             phoneNumber: updateData.phoneNumber,
+            businessName: updateData.businessName,
+            businessType: updateData.businessType,
+            status: updateData.status,
           },
         },
         { new: true, session }

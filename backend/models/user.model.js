@@ -27,6 +27,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "suspended"],
+      default: "active",
+    },
+    businessName: {
+      type: String,
+      required: false,
+    },
+    businessType: {
+      type: String,
+      required: false,
+    },
     refreshToken: String,
     vendorProfile: {
       type: mongoose.Schema.Types.ObjectId,
