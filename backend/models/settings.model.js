@@ -27,6 +27,10 @@ const settingsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    SMTP_TO: {
+      type: String,
+      required: true,
+    },
     SMTP_KEY: {
       type: String,
       required: true,

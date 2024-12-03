@@ -342,7 +342,7 @@ function VendorsPage() {
             <InputText
               id="email"
               value={formData.email}
-              disabled
+              disabled={editingVendor ? true : false}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, email: e.target.value }));
                 if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));

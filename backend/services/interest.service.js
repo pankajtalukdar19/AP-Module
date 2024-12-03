@@ -37,15 +37,15 @@ class InterestService {
           $gte: new Date(currentDate.setHours(0, 0, 0, 0)),
           $lt: new Date(currentDate.setHours(23, 59, 59, 999)),
         },
-      });
+      }); 
 
       // Group applications by vendor
       const vendorApplications = {};
       todaysApplications.forEach((app) => {
-        if (!vendorApplications[app.vendorId]) {
-          vendorApplications[app.vendorId] = [];
+        if (!vendorApplications[app.userID]) {
+          vendorApplications[app.userID] = [];
         }
-        vendorApplications[app.vendorId].push({
+        vendorApplications[app.userID].push({
           applicationId: app._id,
           amount: app.invoiceAmount,
           date: app.createdAt,
@@ -53,18 +53,18 @@ class InterestService {
       });
 
       // Process each vendor's interest
-      for (const [vendorId, applications] of Object.entries(
+      for (const [userID, applications] of Object.entries(
         vendorApplications
       )) {
         let interest = await Interest.findOne({
-          vendorId,
+          userID,
           month,
           year,
-        });
+        }); 
 
         if (!interest) {
           interest = new Interest({
-            vendorId,
+            userID,
             month,
             year,
             interestRate: settings.intrestRate,
@@ -86,7 +86,7 @@ class InterestService {
         interest.dailyInterest = dailyInterest;
         interest.totalInterest += dailyInterest;
         interest.principalAmount = totalPrincipal;
-        interest.lastCalculatedDate = currentDate;
+        interest.lastCalculatedDate = currentDate; 
 
         await interest.save({ session });
       }

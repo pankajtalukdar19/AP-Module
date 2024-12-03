@@ -26,7 +26,7 @@ function MyApplicationPage() {
 
         // Filter and map applications by status
         setApprovedApplications(
-          response?.data?.data
+          response?.data
             ?.map((i: any) => ({
               ...i,
               dueDate: formatDate(i.dueDate),
@@ -37,7 +37,7 @@ function MyApplicationPage() {
         );
 
         setPendingApplications(
-          response?.data?.data
+          response?.data
             ?.map((i: any) => ({
               ...i,
               dueDate: formatDate(i.dueDate),
@@ -48,7 +48,7 @@ function MyApplicationPage() {
         );
 
         setRejectedApplications(
-          response?.data?.data
+          response?.data
             ?.map((i: any) => ({
               ...i,
               dueDate: formatDate(i.dueDate),
@@ -85,6 +85,7 @@ function MyApplicationPage() {
       currency: "USD",
     }).format(rowData.invoiceAmount);
   };
+console.log(pendingApplications);
 
   return (
     <div className="card">

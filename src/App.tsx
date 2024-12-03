@@ -17,6 +17,8 @@ import MyApplicationPage from "./pages/vendors/MyApplicationPage";
 import MyPaymentsPage from "./pages/vendors/MyPaymentsPage";
 import ForgotPassword from "@components/auth/ForgotPassword";
 import ResetPassword from "@components/auth/ResetPassword";
+import UpdateApplicationStatus from "./pages/UpdateApplicationStatus";
+import EditApplication from "./pages/EditApplication";
 
 function App() {
   return (
@@ -53,6 +55,8 @@ function App() {
       </Route>
 
       {/* Error Pages */}
+      <Route path="edit-application" element={<EditApplication />} />
+      <Route path="update-application-status" element={<UpdateApplicationStatus />} />
       <Route path="unauthorized" element={<Unauthorized />} />
       <Route path="404" element={<NotFound />} />
     </Routes>

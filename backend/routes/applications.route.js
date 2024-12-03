@@ -4,7 +4,8 @@ const { auth } = require("../middleware/auth.middleware");
 const applicationController = require("../controllers/applications.controller");
 
 route.get("/", auth, applicationController.getApplication);
-route.get("/:id", auth, applicationController.getDataById);
 route.get("/by-vendor/:vendorId", auth, applicationController.getAllByVendorId);
-route.post("/", auth, applicationController.getApplication);
+route.get("/:id", auth, applicationController.getDataById);
+route.post("/", auth, applicationController.uploadImage.single("invoiceCopy"),applicationController.createApplication);
+route.put('/:id' , applicationController.updateApplication);
 module.exports = route;

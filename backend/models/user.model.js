@@ -12,16 +12,22 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
     },
-    phoneNumber: {
-      type: String,
-      required: false,
-      trim: true,
-      match: [/^\d+$/, "Phone number must contain only digits"],
-    },
     role: {
       type: String,
       enum: ["vendor", "admin"],
       default: "vendor",
+    },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    },
+    businessName: {
+      type: String,
+      trim: true,
+    },
+    businessType: {
+      type: String,
+      trim: true,
     },
     password: {
       type: String,
@@ -31,14 +37,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["active", "inactive", "suspended"],
       default: "active",
-    },
-    businessName: {
-      type: String,
-      required: false,
-    },
-    businessType: {
-      type: String,
-      required: false,
     },
     refreshToken: String,
     resetPasswordToken: String,

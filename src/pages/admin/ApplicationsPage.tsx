@@ -52,7 +52,7 @@ function ApplicationsPage() {
 
       // Filter and map applications by status
       const applications: any =
-        response?.data?.data?.map((app: Application) => ({
+        response?.data?.map((app: Application) => ({
           ...app,
           dueDate: formatDate(app.dueDate),
           invoiceDate: formatDate(app.invoiceDate),
@@ -110,14 +110,7 @@ function ApplicationsPage() {
 
     return <Tag value={rowData.status} severity={severity[rowData.status]} />;
   };
-
-  const amountBodyTemplate = (rowData: Application) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(rowData.invoiceAmount);
-  };
-
+ 
   const calculatedAmountBodyTemplate = (rowData: Application) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -154,26 +147,6 @@ function ApplicationsPage() {
   };
 
   const sharedColumns = [
-    <Column
-      key="businessName"
-      field="vendorId.businessName"
-      header="Business Name"
-      sortable
-    />,
-    <Column
-      key="vendorName"
-      field="vendorId.name"
-      header="Vendor Name"
-      sortable
-    />,
-    <Column key="email" field="vendorId.email" header="Email" sortable />,
-    <Column
-      key="invoiceAmount"
-      field="invoiceAmount"
-      header="Invoice Amount"
-      body={amountBodyTemplate}
-      sortable
-    />,
     <Column
       key="calculatedAmount"
       field="calculatedInvoiceAmount"

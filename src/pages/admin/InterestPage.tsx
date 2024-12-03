@@ -83,12 +83,10 @@ function InterestPage() {
           rowsPerPageOptions={[10, 25, 50]}
           emptyMessage="No interest records found"
         >
-          <Column
-            field="vendorId.businessName"
-            header="Business Name"
-            sortable
-          />
-          <Column field="vendorId.name" header="Vendor Name" sortable />
+          
+          <Column field="userID.businessName" header="Vendor businessName" sortable />
+          <Column field="userID.businessType" header="Vendor businessType" sortable />
+          <Column field="userID.name" header="Vendor Name" sortable />
           <Column
             field="principalAmount"
             header="Principal Amount"

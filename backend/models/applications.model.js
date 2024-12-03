@@ -25,20 +25,16 @@ const application = mongoose.Schema(
       type: Date,
       required: true,
     },
-    userEmail: {
-      type: String,
-      required: true,
-      match: /.+\@.+\..+/,
-    },
     userID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
     },
-
     calculatedInvoiceAmount: {
-      type: Number,
-      required: true,
+      type: Number, 
+    },
+    invoiceCopy: {
+      type: String,
     },
     department: {
       type: String,
@@ -51,9 +47,11 @@ const application = mongoose.Schema(
     },
     partialRatio1: {
       type: Number,
+      default: null, // Allows null if not provided
     },
     partialRatio2: {
       type: Number,
+      default: null, // Allows null if not provided
     },
     status: {
       type: String,

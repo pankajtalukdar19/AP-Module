@@ -4,12 +4,13 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
-import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
+import { FileUpload } from "primereact/fileupload";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 type FormValues = {
   invoiceNumber: string;
@@ -20,7 +21,7 @@ type FormValues = {
   userEmail: string;
   department: string | null;
   userID: string;
-  invoiceAmount: string;
+  invoiceAmount: number;
   paymentCondition: string;
   partialRatio1: number | null;
   partialRatio2: number | null;
@@ -29,10 +30,14 @@ type FormValues = {
 };
 
 
-function DashboardPage() {
+function EditApplication() {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
+
+  //getData from api with Id
+
   const user = useAppSelector((state) => state.auth.user);
-  const toast = useRef<Toast>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const toast = useRef<Toast>(null); 
   const [filePreview, setFilePreview] = useState<string | null>(null);
 
   const [formValues, setFormValues] = useState<FormValues>({
@@ -44,12 +49,12 @@ function DashboardPage() {
     userEmail: "",
     department: null,
     userID: user?._id || "",
-    invoiceAmount: "",
+    invoiceAmount: 0,
     paymentCondition: "Full Payment",
     partialRatio1: null,
     partialRatio2: null,
     invoiceCopy: null,
-    status: "pending",
+    status: "approved",
   });
 
   const departments = [
@@ -67,15 +72,6 @@ function DashboardPage() {
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
-    }));
-  };
-
-  const handleFileUpload = (e: any) => {
-    console.log('e', e?.files[0]);
-
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      invoiceCopy: e.files[0],
     }));
   };
 
@@ -98,8 +94,15 @@ function DashboardPage() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    const dataToSubmit = {
+    if (!id) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Invalid Request",
+        detail: "Application ID is required.",
+      });
+      return;
+    }
+    const dataToSubmit : FormValues = {
       invoiceNumber: formValues.invoiceNumber,
       date: formValues.date,
       invoiceDate: formValues.invoiceDate,
@@ -107,22 +110,17 @@ function DashboardPage() {
       dueDate: formValues.dueDate,
       userEmail: formValues.userEmail,
       department: formValues.department,
-      userID: user?._id,
+      userID: user?._id || "",
       invoiceAmount: formValues.invoiceAmount,
       paymentCondition: formValues.paymentCondition,
       partialRatio1: formValues.paymentCondition === "Partial Payment" ? formValues.partialRatio1 : null,
       partialRatio2: formValues.paymentCondition === "Partial Payment" ? formValues.partialRatio2 : null,
       invoiceCopy: formValues.invoiceCopy,
-      status: formValues.status,
-    };
-
-    console.log("dataToSubmit", dataToSubmit);
-    
-
-
+      status: "approved",
+    }; 
     try {
-      const response = await applicationsApi.submitApplications(dataToSubmit);
-      if (response?.data?.success) {
+      await applicationsApi.updateApplication(id, dataToSubmit);
+ 
         toast.current?.show({
           severity: "success",
           summary: "Success",
@@ -139,14 +137,17 @@ function DashboardPage() {
           userEmail: "",
           department: null,
           userID: user?._id || "",
-          invoiceAmount: "",
+          invoiceAmount: 0,
           paymentCondition: "Full Payment",
           partialRatio1: null,
           partialRatio2: null,
           invoiceCopy: null,
           status: "pending",
         });
-      }
+
+        // Redirect to the dashboard
+   
+      window.location.href = "/";
     } catch (error) {
       toast.current?.show({
         severity: "error",
@@ -221,6 +222,41 @@ function DashboardPage() {
     }
   };
 
+  const fetchApplication = async () => {
+    if (!id) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Invalid Request",
+        detail: "Application ID is required.",
+      });
+      return;
+    }
+
+    try {
+      const res = await applicationsApi.getApplicationById(id);
+      if (res?.data) {
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          ...res.data,
+          invoiceDate: new Date(res.data.invoiceDate || ""),
+          paymentDate: new Date(res.data.paymentDate || ""),
+          dueDate: new Date(res.data.dueDate || ""),
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching application:", error);
+      toast.current?.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to fetch application data.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, [id]);
+
 
   return user?.role === "vendor" ? (
     <Card className="p-shadow-3 forenax-wrapper" style={{ padding: "1rem" }}>
@@ -229,6 +265,7 @@ function DashboardPage() {
         <Toast ref={toast} />
         {/* Form Content */}
         <div className="grid">
+
           {/* Department */}
           <div className="col-12 p-md-6 p-field">
             <label htmlFor="department">Department</label>
@@ -256,19 +293,6 @@ function DashboardPage() {
               value={formValues.invoiceNumber}
               onChange={handleInputChange}
               required
-              className="mb-2"
-            />
-          </div>
-
-          {/* Date */}
-          <div className="col-12 p-md-6 p-field">
-            <label htmlFor="date">Date</label>
-            <Calendar
-              id="date"
-              name="date"
-              value={formValues.date}
-              disabled
-              dateFormat="dd/mm/yy"
               className="mb-2"
             />
           </div>
@@ -320,7 +344,8 @@ function DashboardPage() {
             <InputText
               id="invoiceAmount"
               name="invoiceAmount"
-              value={formValues.invoiceAmount}
+              type="number" // Use number input type
+              value={formValues.invoiceAmount.toString()} 
               onChange={handleInputChange}
               required
               className="mb-2"
@@ -332,7 +357,7 @@ function DashboardPage() {
             <label htmlFor="invoiceCopy">Upload Invoice Copy</label>
             <FileUpload
               mode="basic"
-              name="invoiceCopy"
+              name="file"
               accept="image/*, .pdf, .doc, .docx"
               maxFileSize={1000000}
               onSelect={handleBillUpload}
@@ -400,11 +425,11 @@ function DashboardPage() {
           )}
         </div>
         <div className="col-12 p-md-12 p-field">
-          <Button type="submit" label="Submit" />
+          <Button type="submit" label="Update" />
         </div>
       </form>
     </Card>
   ) : null;
 }
 
-export default DashboardPage;
+export default EditApplication;

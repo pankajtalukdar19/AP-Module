@@ -6,10 +6,10 @@ module.exports = {
   getVendorInterest: async (req, res) => {
     try {
       const { month, year } = req.query;
-      const vendorId = req.user._id;
+      const userID = req.user._id;
 
       const interest = await Interest.findOne({
-        vendorId,
+        userID,
         month: parseInt(month),
         year: parseInt(year),
       }).populate("applications.applicationId");
@@ -43,7 +43,7 @@ module.exports = {
         month: parseInt(month),
         year: parseInt(year),
       })
-        .populate("vendorId", "name email businessName")
+        .populate("userID", "name email businessName")
         .populate("applications.applicationId");
 
       res.json({
@@ -62,13 +62,13 @@ module.exports = {
   // Get interest summary for dashboard
   getInterestSummary: async (req, res) => {
     try {
-      const vendorId = req.user._id;
+      const userID = req.user._id;
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth() + 1;
       const currentYear = currentDate.getFullYear();
 
       const interest = await Interest.findOne({
-        vendorId,
+        userID,
         month: currentMonth,
         year: currentYear,
       });
