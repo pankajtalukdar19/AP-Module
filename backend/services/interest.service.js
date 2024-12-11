@@ -24,8 +24,8 @@ class InterestService {
         principalAmount: app.calculatedInvoiceAmount,
         interestRate: app.interestRate,
         dailyInterest: app.calculatedInvoiceAmount * app.interestRate,
-        month,
-        year,
+        month: currentDate.getMonth() + 1,
+        year: currentDate.getFullYear(),
         lastCalculatedDate: currentDate,
         applicationId: app._id,
       }));

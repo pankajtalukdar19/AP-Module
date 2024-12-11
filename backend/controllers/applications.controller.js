@@ -107,6 +107,7 @@ module.exports = {
 
   createApplication: async (req, res) => {
     try {
+      
       const {
         date,
         invoiceDate,
@@ -122,6 +123,14 @@ module.exports = {
         invoiceCopy,
       } = req.body;
   
+  
+      const vendorDetails = await user.findOne({ _id: userID });
+      const keys = await settings.findOne();
+      
+      if (!keys) {
+        return res.status(500).json({ success: false, msg: "Failed to save keys" });
+      }
+
       const createdData = {
         invoiceNumber,
         invoiceAmount,
@@ -136,16 +145,15 @@ module.exports = {
         partialRatio1: partialRatio1 == "null" ? 0 : Number(partialRatio1),
         partialRatio2: partialRatio2 == "null" ? 0 : Number(partialRatio2),
         calculatedInvoiceAmount: Number(invoiceAmount),
+        interestRate:  Number(keys.interestRate),
+        userEmail:vendorDetails.email
       };
-  
-      const vendorDetails = await user.findOne({ _id: userID });
-      const keys = await settings.findOne();
       const savedEntry = await application.create(createdData);
-  
+
       if (!savedEntry) {
         return res.status(500).json({ success: false, msg: "Failed to save application" });
       }
-  
+
       // Send response after saving the application
       res.status(200).json({ success: true, msg: "Application saved", savedEntry });
   
