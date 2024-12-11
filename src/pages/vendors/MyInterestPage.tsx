@@ -27,6 +27,8 @@ function MyInterestPage() {
       const response = await interestApi.getVendorInterest(month, year);
       setInterestDetail(response.data.data);
     } catch (error) {
+
+      setInterestDetail(null);
       toast.current?.show({
         severity: "error",
         summary: "Error",
@@ -111,7 +113,7 @@ function MyInterestPage() {
         </div>
 
         <DataTable
-          value={interestDetail?.applications || []}
+          value={interestDetail || []}
           loading={loading}
           paginator
           rows={10}
@@ -123,21 +125,38 @@ function MyInterestPage() {
             header="Invoice Number"
             sortable
           />
+
           <Column
-            field="amount"
-            header="Amount"
-            body={(rowData) => amountTemplate(rowData.amount)}
+            field="principalAmount"
+            header="Principal Amount"
+            body={(rowData) => amountTemplate(rowData.principalAmount)}
             sortable
           />
+
+          <Column
+            field="interestRate"
+            header="Interest Rate"
+            body={(rowData) => amountTemplate(rowData.interestRate)}
+            sortable
+          />
+
+          <Column
+            field="dailyInterest"
+            header="Daily Interest"
+            body={(rowData) => amountTemplate(rowData.dailyInterest)}
+            sortable
+          />
+
           <Column
             field="date"
             header="Date"
             body={(rowData) => formatDate(rowData.date)}
             sortable
           />
+
           <Column
             field="applicationId.invoiceAmount"
-            header="Invoice Amount"
+            header="Original Invoice Amount"
             body={(rowData) =>
               amountTemplate(rowData.applicationId.invoiceAmount)
             }
@@ -166,7 +185,7 @@ function MyInterestPage() {
             <div className="text-xl">
               {amountTemplate(
                 (interestDetail?.principalAmount || 0) +
-                  (interestDetail?.totalInterest || 0)
+                (interestDetail?.totalInterest || 0)
               )}
             </div>
           </div>

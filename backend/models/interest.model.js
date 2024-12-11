@@ -21,33 +21,19 @@ const interestSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    totalInterest: {
+    totalInterestAmount: {
       type: Number,
       required: true,
       default: 0,
-    },
-    month: {
-      type: Number,
-      required: true,
-    },
-    year: {
-      type: Number,
-      required: true,
     },
     lastCalculatedDate: {
       type: Date,
       required: true,
     },
-    applications: [
-      {
-        applicationId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "application",
-        },
-        amount: Number,
-        date: Date,
-      },
-    ],
+    applicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "application",
+    },
   },
   { timestamps: true }
 );

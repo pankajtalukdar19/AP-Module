@@ -135,6 +135,7 @@ module.exports = {
         paymentCondition,
         partialRatio1: partialRatio1 == "null" ? 0 : Number(partialRatio1),
         partialRatio2: partialRatio2 == "null" ? 0 : Number(partialRatio2),
+        calculatedInvoiceAmount: Number(invoiceAmount),
       };
   
       const vendorDetails = await user.findOne({ _id: userID });
@@ -187,18 +188,14 @@ module.exports = {
   
       if (existingApplication.status === "approved") {
         return res.status(200).json({ success: false, msg: "Application is already approved you can't update" });
-      }
-
-      console.log('existingApplication', existingApplication);
-      
+      } 
   
       // Update the application if not already approved
       const updatedApplication = await application.findOneAndUpdate(
         { _id: req.params.id },
         req.body,
         { new: true }
-      );
-      console.log('updatedApplication', updatedApplication);
+      ); 
       
   
       res.json({ success: true, msg: "Application is approved", data: updatedApplication });

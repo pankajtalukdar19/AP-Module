@@ -8,11 +8,10 @@ module.exports = {
       const { month, year } = req.query;
       const userID = req.user._id;
 
-      const interest = await Interest.findOne({
+      const interest = await Interest.find({
         userID,
-        month: parseInt(month),
-        year: parseInt(year),
-      }).populate("applications.applicationId");
+       createdAt: { $gte: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
+      }).populate("applicationId")  .populate("userID", "name email businessName phoneNumber businessType")
 
       if (!interest) {
         return res.status(404).json({
@@ -23,6 +22,7 @@ module.exports = {
 
       res.json({
         success: true,
+        message: "Interest details fetched successfully",
         data: interest,
       });
     } catch (error) {
@@ -39,15 +39,15 @@ module.exports = {
     try {
       const { month, year } = req.query;
 
-      const interests = await Interest.find({
-        month: parseInt(month),
-        year: parseInt(year),
+      const interests = await Interest.find( {
+        createdAt: { $gte: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
       })
-        .populate("userID", "name email businessName")
-        .populate("applications.applicationId");
+        .populate("userID", "name email businessName phoneNumber businessType")
+        .populate("applicationId");
 
       res.json({
         success: true,
+        message: "Interest details fetched successfully",
         data: interests,
       });
     } catch (error) {

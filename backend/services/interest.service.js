@@ -10,86 +10,54 @@ class InterestService {
   static initCronJobs() {
     // Daily interest calculation at midnight
     CronJob.scheduleJob("0 0 * * *", () => {
+      console.log("Daily interest calculation started");
       this.calculateDailyInterest();
     });
 
     // Monthly principal update on last day of month at 23:59
     CronJob.scheduleJob("59 23 L * *", () => {
+      console.log("Monthly principal update started");
       this.updateMonthlyPrincipal();
     });
   }
 
   // Calculate daily interest for all vendors
   static async calculateDailyInterest() {
+    console.log("calculateDailyInterest function started");
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
       const settings = await Settings.findOne();
       const currentDate = new Date();
-      const month = currentDate.getMonth() + 1;
-      const year = currentDate.getFullYear();
+      
 
-      // Get all approved applications for the current date
+      // Get all approved applications  
       const todaysApplications = await Application.find({
         status: "approved",
-        createdAt: {
-          $gte: new Date(currentDate.setHours(0, 0, 0, 0)),
-          $lt: new Date(currentDate.setHours(23, 59, 59, 999)),
-        },
-      }); 
-
-      // Group applications by vendor
-      const vendorApplications = {};
-      todaysApplications.forEach((app) => {
-        if (!vendorApplications[app.userID]) {
-          vendorApplications[app.userID] = [];
-        }
-        vendorApplications[app.userID].push({
-          applicationId: app._id,
-          amount: app.invoiceAmount,
-          date: app.createdAt,
-        });
       });
 
+
       // Process each vendor's interest
-      for (const [userID, applications] of Object.entries(
-        vendorApplications
-      )) {
-        let interest = await Interest.findOne({
+      for (const application of todaysApplications) {
+
+        console.log('application', application);
+        
+        const userID = application.userID; 
+
+        const dailyInterest = ((application.calculatedInvoiceAmount || 0) * (settings.intrestRate || 0)) / 365;
+        const UpdateData = {
           userID,
-          month,
-          year,
-        }); 
-
-        if (!interest) {
-          interest = new Interest({
-            userID,
-            month,
-            year,
-            interestRate: settings.intrestRate,
-            lastCalculatedDate: currentDate,
-            applications: [],
-          });
-        }
-
-        // Add new applications
-        interest.applications.push(...applications);
-
-        // Calculate total principal (including today's applications)
-        const totalPrincipal =
-          interest.principalAmount +
-          applications.reduce((sum, app) => sum + app.amount, 0);
-
-        // Calculate daily interest
-        const dailyInterest = (totalPrincipal * settings.intrestRate) / 365;
-        interest.dailyInterest = dailyInterest;
-        interest.totalInterest += dailyInterest;
-        interest.principalAmount = totalPrincipal;
-        interest.lastCalculatedDate = currentDate; 
-
-        await interest.save({ session });
-      }
+          principalAmount: application.calculatedInvoiceAmount,
+          interestRate: settings.intrestRate,
+          dailyInterest: dailyInterest,
+          totalInterestAmount: 0,
+          lastCalculatedDate: currentDate,
+          applicationId: application._id,
+        }; 
+        
+        await Interest.create([UpdateData],{ session });
+      } 
 
       await session.commitTransaction();
     } catch (error) {
@@ -102,6 +70,7 @@ class InterestService {
 
   // Update monthly principal by adding accumulated interest
   static async updateMonthlyPrincipal() {
+    console.log("updateMonthlyPrincipal function started");
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -120,7 +89,7 @@ class InterestService {
         await Interest.create(
           [
             {
-              vendorId: interest.vendorId,
+              userId: interest.userId,
               principalAmount: newPrincipal,
               interestRate: interest.interestRate,
               month: month === 12 ? 1 : month + 1,
