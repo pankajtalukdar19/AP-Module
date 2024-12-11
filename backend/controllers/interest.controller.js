@@ -1,5 +1,5 @@
 const Interest = require("../models/interest.model");
-
+const Application = require("../models/applications.model");
 module.exports = {
   // Get vendor's interest details
   getVendorInterest: async (req, res) => {
@@ -51,24 +51,27 @@ module.exports = {
   // Get interest summary for dashboard
   getInterestSummary: async (req, res) => {
     try {
-      const vendorId = req.user._id;
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear();
+      const userID = req.user._id;
+      const interest = await Interest.find({
+        userID,
+        accumulatedInterest: false,
+      });
 
-      const interest = await Interest.findOne({
-        vendorId,
-        month: currentMonth,
-        year: currentYear,
+      //Get the application
+      const application = await Application.findOne({
+        userID,
+        status: "approved",
       });
 
       res.json({
         success: true,
         data: {
-          principalAmount: interest?.principalAmount || 0,
-          totalInterest: interest?.totalInterest || 0,
-          dailyInterest: interest?.dailyInterest || 0,
-          lastCalculated: interest?.lastCalculatedDate,
+          calculatedInvoiceAmount: application?.calculatedInvoiceAmount || 0,
+          principalAmount: application?.invoiceAmount || 0,
+          totalInterest:
+            application?.calculatedInvoiceAmount - application?.invoiceAmount ||
+            0,
+          interestRate: application?.interestRate || 0,
         },
       });
     } catch (error) {

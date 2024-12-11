@@ -21,15 +21,22 @@ const interestSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    totalInterest: {
+    month: {
       type: Number,
       required: true,
-      default: 0,
     },
-
+    year: {
+      type: Number,
+      required: true,
+    },
     lastCalculatedDate: {
       type: Date,
       required: true,
+    },
+    accumulatedInterest: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     applicationId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -31,13 +31,13 @@ function InterestPage() {
     }
   };
 
-  const amountTemplate = (rowData: any, field: string) => {
+  const amountTemplate = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(rowData[field]);
+    }).format(amount);
   };
 
   const rateTemplate = (rowData: any) => {
@@ -57,28 +57,28 @@ function InterestPage() {
           rowsPerPageOptions={[10, 25, 50]}
           emptyMessage="No interest records found"
         >
+          <Column field="userID.businessName" header="Business Name" sortable />
+          <Column field="userID.name" header="Vendor Name" sortable />
           <Column
-            field="vendorId.businessName"
-            header="Business Name"
+            field="applicationId.invoiceAmount"
+            header="Invoice Amount"
+            body={(rowData) =>
+              amountTemplate(rowData.applicationId.invoiceAmount)
+            }
             sortable
           />
-          <Column field="vendorId.name" header="Vendor Name" sortable />
           <Column
-            field="principalAmount"
+            field="applicationId.calculatedInvoiceAmount"
             header="Principal Amount"
-            body={(rowData) => amountTemplate(rowData, "principalAmount")}
+            body={(rowData) =>
+              amountTemplate(rowData.applicationId.calculatedInvoiceAmount)
+            }
             sortable
           />
           <Column
             field="dailyInterest"
             header="Daily Interest"
-            body={(rowData) => amountTemplate(rowData, "dailyInterest")}
-            sortable
-          />
-          <Column
-            field="totalInterest"
-            header="Total Interest"
-            body={(rowData) => amountTemplate(rowData, "totalInterest")}
+            body={(rowData) => amountTemplate(rowData.dailyInterest)}
             sortable
           />
           <Column

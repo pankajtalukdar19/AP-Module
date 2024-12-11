@@ -7,7 +7,7 @@ import { settingsApi } from "@api/settings.api";
 import { Password } from "primereact/password";
 
 interface Settings {
-  intrestRate: number;
+  interestRate: number;
   SMTP_HOST: string;
   SMTP_PORT: number;
   SMTP_USER: string;
@@ -78,10 +78,10 @@ function Settings() {
               <label htmlFor="interestRate">Interest Rate (%)</label>
               <InputNumber
                 id="interestRate"
-                value={settings.intrestRate * 100}
+                value={settings.interestRate * 100}
                 onValueChange={(e) => {
                   if (e.value !== null && e.value !== undefined) {
-                    handleUpdate({ intrestRate: e.value / 100 });
+                    handleUpdate({ interestRate: e.value / 100 });
                   }
                 }}
                 mode="decimal"
@@ -91,7 +91,7 @@ function Settings() {
                 max={100}
               />
               <small className="text-gray-500">
-                Current rate: {(settings.intrestRate * 100).toFixed(2)}%
+                Current rate: {(settings.interestRate * 100).toFixed(2)}%
               </small>
             </div>
           </div>
