@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const interestSchema = new mongoose.Schema(
   {
-    vendorId: {
+    userID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -26,28 +26,15 @@ const interestSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    month: {
-      type: Number,
-      required: true,
-    },
-    year: {
-      type: Number,
-      required: true,
-    },
+
     lastCalculatedDate: {
       type: Date,
       required: true,
     },
-    applications: [
-      {
-        applicationId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Application",
-        },
-        amount: Number,
-        date: Date,
-      },
-    ],
+    applicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "application",
+    },
   },
   { timestamps: true }
 );

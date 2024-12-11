@@ -1,30 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import { interestApi } from "@/api/interest.api";
-import { formatDate } from "@utils/index";
 
 function MyInterestPage() {
   const [interestDetail, setInterestDetail] = useState<any>(null);
   const [interestSummary, setInterestSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = useState(new Date());
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
     loadInterestData();
     loadInterestSummary();
-  }, [date]);
+  }, []);
 
   const loadInterestData = async () => {
     try {
       setLoading(true);
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      const response = await interestApi.getVendorInterest(month, year);
+      const response = await interestApi.getVendorInterest();
       setInterestDetail(response.data.data);
     } catch (error) {
       toast.current?.show({
@@ -101,17 +96,8 @@ function MyInterestPage() {
 
       {/* Monthly Details */}
       <Card title="Monthly Interest Details">
-        <div className="flex justify-content-end mb-4">
-          <Calendar
-            value={date}
-            onChange={(e) => setDate(e.value || new Date())}
-            view="month"
-            dateFormat="mm/yy"
-          />
-        </div>
-
         <DataTable
-          value={interestDetail?.applications || []}
+          value={interestDetail || []}
           loading={loading}
           paginator
           rows={10}
@@ -119,28 +105,27 @@ function MyInterestPage() {
           emptyMessage="No interest records found"
         >
           <Column
-            field="applicationId.invoiceNumber"
-            header="Invoice Number"
+            field="principalAmount"
+            header="Principal Amount"
+            body={(rowData) => amountTemplate(rowData?.principalAmount || 0)}
             sortable
           />
           <Column
-            field="amount"
-            header="Amount"
-            body={(rowData) => amountTemplate(rowData.amount)}
+            field="dailyInterest"
+            header="Daily Interest"
+            body={(rowData) => amountTemplate(rowData?.dailyInterest || 0)}
             sortable
           />
           <Column
-            field="date"
-            header="Date"
-            body={(rowData) => formatDate(rowData.date)}
+            field="totalInterest"
+            header="Total Interest"
+            body={(rowData) => amountTemplate(rowData?.totalInterest || 0)}
             sortable
           />
           <Column
-            field="applicationId.invoiceAmount"
-            header="Invoice Amount"
-            body={(rowData) =>
-              amountTemplate(rowData.applicationId.invoiceAmount)
-            }
+            field="interestRate"
+            header="Interest Rate"
+            body={rateTemplate}
             sortable
           />
         </DataTable>

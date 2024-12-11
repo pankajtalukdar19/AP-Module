@@ -34,16 +34,12 @@ interface InterestDetail {
 }
 
 export const interestApi = {
-  getVendorInterest: async (month: number, year: number) => {
-    return await api.get<ApiResponse<InterestDetail>>(
-      `/interest/vendor?month=${month}&year=${year}`
-    );
+  getVendorInterest: async () => {
+    return await api.get<ApiResponse<InterestDetail>>(`/interest/vendor`);
   },
 
-  getAllInterest: async (month: number, year: number) => {
-    return await api.get<ApiResponse<InterestDetail[]>>(
-      `/interest/all?month=${month}&year=${year}`
-    );
+  getAllInterest: async () => {
+    return await api.get<ApiResponse<InterestDetail[]>>(`/interest/all`);
   },
 
   getInterestSummary: async () => {

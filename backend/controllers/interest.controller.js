@@ -1,18 +1,12 @@
 const Interest = require("../models/interest.model");
-const Settings = require("../models/settings.model");
 
 module.exports = {
   // Get vendor's interest details
   getVendorInterest: async (req, res) => {
     try {
-      const { month, year } = req.query;
-      const vendorId = req.user._id;
-
-      const interest = await Interest.findOne({
-        vendorId,
-        month: parseInt(month),
-        year: parseInt(year),
-      }).populate("applications.applicationId");
+      const interest = await Interest.find({
+        userID: req.user._id,
+      }).populate("applicationId");
 
       if (!interest) {
         return res.status(404).json({
@@ -37,14 +31,9 @@ module.exports = {
   // Get all vendors' interest (admin only)
   getAllInterest: async (req, res) => {
     try {
-      const { month, year } = req.query;
-
-      const interests = await Interest.find({
-        month: parseInt(month),
-        year: parseInt(year),
-      })
-        .populate("vendorId", "name email businessName")
-        .populate("applications.applicationId");
+      const interests = await Interest.find()
+        .populate("userID", "name email businessName")
+        .populate("applicationId");
 
       res.json({
         success: true,

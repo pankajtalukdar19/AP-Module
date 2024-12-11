@@ -52,7 +52,7 @@ function ApplicationsPage() {
 
       // Filter and map applications by status
       const applications: any =
-        response?.data?.data?.map((app: Application) => ({
+        response?.data?.map((app: Application) => ({
           ...app,
           dueDate: formatDate(app.dueDate),
           invoiceDate: formatDate(app.invoiceDate),
@@ -156,17 +156,17 @@ function ApplicationsPage() {
   const sharedColumns = [
     <Column
       key="businessName"
-      field="vendorId.businessName"
+      field="userID.businessName"
       header="Business Name"
       sortable
     />,
     <Column
       key="vendorName"
-      field="vendorId.name"
+      field="userID.name"
       header="Vendor Name"
       sortable
     />,
-    <Column key="email" field="vendorId.email" header="Email" sortable />,
+    <Column key="email" field="userID.email" header="Email" sortable />,
     <Column
       key="invoiceAmount"
       field="invoiceAmount"

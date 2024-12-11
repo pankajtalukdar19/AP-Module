@@ -32,7 +32,7 @@ const application = mongoose.Schema(
     },
     userID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
       required: true,
     },
 
