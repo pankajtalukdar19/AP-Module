@@ -2,7 +2,7 @@ import api from "./axios.config";
 import type { ApiResponse } from "../types/api.types";
 
 interface Settings {
-  intrestRate: number;
+  interestRate: number;
   SMTP_HOST: string;
   SMTP_PORT: number;
   SMTP_USER: string;

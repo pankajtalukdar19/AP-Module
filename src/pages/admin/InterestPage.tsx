@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import { interestApi } from "@/api/interest.api";
@@ -10,19 +9,16 @@ import { formatDate } from "@utils/index";
 function InterestPage() {
   const [interests, setInterests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [date, setDate] = useState(new Date());
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
     loadInterests();
-  }, [date]);
+  }, []);
 
   const loadInterests = async () => {
     try {
       setLoading(true);
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
-      const response: any = await interestApi.getAllInterest(month, year);
+      const response: any = await interestApi.getAllInterest();
       setInterests(response.data.data);
     } catch (error) {
       toast.current?.show({
@@ -35,30 +31,17 @@ function InterestPage() {
     }
   };
 
-  const amountTemplate = (rowData: any, field: string) => {
+  const amountTemplate = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(rowData[field]);
+    }).format(amount);
   };
 
   const rateTemplate = (rowData: any) => {
     return `${(rowData.interestRate * 100).toFixed(2)}%`;
-  };
-
-  const applicationsSummaryTemplate = (rowData: any) => {
-    const total = rowData.applications.reduce(
-      (sum: number, app: any) => sum + app.amount,
-      0
-    );
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(total);
   };
 
   return (
@@ -66,15 +49,6 @@ function InterestPage() {
       <Toast ref={toast} />
 
       <Card title="Interest Overview">
-        <div className="flex justify-content-end mb-4">
-          <Calendar
-            value={date}
-            onChange={(e) => setDate(e.value || new Date())}
-            view="month"
-            dateFormat="mm/yy"
-          />
-        </div>
-
         <DataTable
           value={interests}
           loading={loading}
@@ -83,38 +57,34 @@ function InterestPage() {
           rowsPerPageOptions={[10, 25, 50]}
           emptyMessage="No interest records found"
         >
-          
-          <Column field="userID.businessName" header="Vendor businessName" sortable />
-          <Column field="userID.businessType" header="Vendor businessType" sortable />
+          <Column field="userID.businessName" header="Business Name" sortable />
           <Column field="userID.name" header="Vendor Name" sortable />
           <Column
-            field="principalAmount"
+            field="applicationId.invoiceAmount"
+            header="Invoice Amount"
+            body={(rowData) =>
+              amountTemplate(rowData.applicationId.invoiceAmount)
+            }
+            sortable
+          />
+          <Column
+            field="applicationId.calculatedInvoiceAmount"
             header="Principal Amount"
-            body={(rowData) => amountTemplate(rowData, "principalAmount")}
+            body={(rowData) =>
+              amountTemplate(rowData.applicationId.calculatedInvoiceAmount)
+            }
             sortable
           />
           <Column
             field="dailyInterest"
             header="Daily Interest"
-            body={(rowData) => amountTemplate(rowData, "dailyInterest")}
-            sortable
-          />
-          <Column
-            field="totalInterest"
-            header="Total Interest"
-            body={(rowData) => amountTemplate(rowData, "totalInterest")}
+            body={(rowData) => amountTemplate(rowData.dailyInterest)}
             sortable
           />
           <Column
             field="interestRate"
             header="Interest Rate"
             body={rateTemplate}
-            sortable
-          />
-          <Column
-            field="applications"
-            header="New Applications"
-            body={applicationsSummaryTemplate}
             sortable
           />
           <Column

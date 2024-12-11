@@ -1,17 +1,12 @@
 const Interest = require("../models/interest.model");
-const Settings = require("../models/settings.model");
-
+const Application = require("../models/applications.model");
 module.exports = {
   // Get vendor's interest details
   getVendorInterest: async (req, res) => {
     try {
-      const { month, year } = req.query;
-      const userID = req.user._id;
-
       const interest = await Interest.find({
-        userID,
-       createdAt: { $gte: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
-      }).populate("applicationId")  .populate("userID", "name email businessName phoneNumber businessType")
+        userID: req.user._id,
+      }).populate("applicationId");
 
       if (!interest) {
         return res.status(404).json({
@@ -37,12 +32,8 @@ module.exports = {
   // Get all vendors' interest (admin only)
   getAllInterest: async (req, res) => {
     try {
-      const { month, year } = req.query;
-
-      const interests = await Interest.find( {
-        createdAt: { $gte: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
-      })
-        .populate("userID", "name email businessName phoneNumber businessType")
+      const interests = await Interest.find()
+        .populate("userID", "name email businessName")
         .populate("applicationId");
 
       res.json({
@@ -63,23 +54,31 @@ module.exports = {
   getInterestSummary: async (req, res) => {
     try {
       const userID = req.user._id;
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear();
-
-      const interest = await Interest.findOne({
+      const interest = await Interest.find({
         userID,
-        month: currentMonth,
-        year: currentYear,
+        accumulatedInterest: false,
       });
+
+      const currentMonthInterest = interest.reduce((acc, item) => {
+        return acc + item.dailyInterest;
+      }, 0);
+      //Get the application
+      const application = await Application.findOne({
+        userID,
+        status: "approved",
+      });
+
+      const onlyInterest =
+        application?.calculatedInvoiceAmount - application?.invoiceAmount;
 
       res.json({
         success: true,
         data: {
-          principalAmount: interest?.principalAmount || 0,
-          totalInterest: interest?.totalInterest || 0,
-          dailyInterest: interest?.dailyInterest || 0,
-          lastCalculated: interest?.lastCalculatedDate,
+          calculatedInvoiceAmount: application?.calculatedInvoiceAmount || 0,
+          principalAmount: application?.invoiceAmount || 0,
+          totalInterest: onlyInterest + currentMonthInterest || 0,
+          interestRate: application?.interestRate || 0,
+          currentMonthInterest: currentMonthInterest || 0,
         },
       });
     } catch (error) {

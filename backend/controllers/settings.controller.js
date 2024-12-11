@@ -8,7 +8,7 @@ module.exports = {
       // Create default settings if none exist
       if (!settings) {
         settings = await Settings.create({
-          intrestRate: 0.001,
+          interestRate: 0.001,
           SMTP_HOST: "smtp.example.com",
           SMTP_PORT: 587,
           SMTP_USER: "user@example.com",

@@ -1,8 +1,17 @@
 const mongoose = require("mongoose");
 const application = mongoose.Schema(
   {
+    userID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     invoiceNumber: {
       type: String,
+      required: true,
+    },
+    interestRate: {
+      type: Number,
       required: true,
     },
     invoiceAmount: {
@@ -25,10 +34,10 @@ const application = mongoose.Schema(
       type: Date,
       required: true,
     },
-    userID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    userEmail: {
+      type: String,
       required: true,
+      match: /.+\@.+\..+/,
     },
     calculatedInvoiceAmount: {
       type: Number, 
@@ -52,6 +61,9 @@ const application = mongoose.Schema(
     partialRatio2: {
       type: Number,
       default: null, // Allows null if not provided
+    },
+    approvedDate: {
+      type: Date,
     },
     status: {
       type: String,

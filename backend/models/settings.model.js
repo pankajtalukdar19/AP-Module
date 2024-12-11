@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const settingsSchema = new mongoose.Schema(
   {
-    intrestRate: {
+    interestRate: {
       type: Number,
       required: true,
       default: 0.001,
