@@ -148,12 +148,6 @@ function ApplicationsPage() {
 
   const sharedColumns = [
     <Column
-      key="businessName"
-      field="userID.businessName"
-      header="Business Name"
-      sortable
-    />,
-    <Column
       key="vendorName"
       field="userID.name"
       header="Vendor Name"
@@ -164,7 +158,6 @@ function ApplicationsPage() {
       key="invoiceAmount"
       field="invoiceAmount"
       header="Invoice Amount"
-      body={amountBodyTemplate}
       sortable
     />,
     <Column

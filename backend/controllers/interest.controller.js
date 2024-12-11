@@ -1,5 +1,7 @@
 const Interest = require("../models/interest.model");
 const Application = require("../models/applications.model");
+const settings = require("../models/settings.model");
+
 module.exports = {
   // Get vendor's interest details
   getVendorInterest: async (req, res) => {
@@ -79,6 +81,54 @@ module.exports = {
           totalInterest: onlyInterest + currentMonthInterest || 0,
           interestRate: application?.interestRate || 0,
           currentMonthInterest: currentMonthInterest || 0,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error fetching interest summary",
+        error: error.message,
+      });
+    }
+  },
+  getInterestAdminSummary: async (req, res) => {
+    try { 
+      const interest = await Interest.find({
+        accumulatedInterest: false,
+      });
+
+      const currentMonthInterest = interest.reduce((acc, item) => {
+        return acc + item.dailyInterest;
+      }, 0);
+
+      //Get the application
+      const application = await Application.find({
+        status: "approved",
+      });
+
+      const totalInvoiceAmount = application.reduce((acc, item) => {
+        return acc + item.invoiceAmount;
+      }, 0);
+
+      const onlyInterest = application.reduce((acc, item) => {
+        return acc + item.calculatedInvoiceAmount - item.invoiceAmount;
+      }, 0);
+
+      const totalCalculatedInterest = application.reduce((acc, item) => {
+        return acc +  item.calculatedInvoiceAmount;
+      }, 0);
+       
+      const keys = await settings.findOne();
+
+      res.json({
+        success: true,
+        data: {
+          totalInvoiceAmount:totalInvoiceAmount,
+          totalPrincipleAmount: totalCalculatedInterest || 0,
+          totalInterest: onlyInterest || 0,
+          currentMonthInterest: currentMonthInterest || 0, 
+          limitLeft: (keys.loanLimit - totalCalculatedInterest) || 0,
+          applicationCount: application.length || 0
         },
       });
     } catch (error) {

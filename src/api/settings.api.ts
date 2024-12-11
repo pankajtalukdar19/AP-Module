@@ -8,6 +8,8 @@ interface Settings {
   SMTP_USER: string;
   SMTP_PASSWORD: string;
   SMTP_FROM: string;
+  SMTP_TO: string;
+  
 }
 
 export const settingsApi = {

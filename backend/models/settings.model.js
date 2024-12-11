@@ -7,6 +7,10 @@ const settingsSchema = new mongoose.Schema(
       required: true,
       default: 0.001,
     },
+    loanLimit: {
+      type: Number,
+      required: true,
+    },
     SMTP_HOST: {
       type: String,
       required: true,

@@ -51,6 +51,7 @@ app.use((err, req, res, next) => {
 
 // Initialize interest calculation cron jobs
 InterestService.initCronJobs();
+// InterestService.updateMonthlyPrincipal();
 // InterestService.calculateDailyInterest();
 
 app.listen(PORT, () => {

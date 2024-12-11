@@ -13,6 +13,7 @@ interface Settings {
   SMTP_USER: string;
   SMTP_PASSWORD: string;
   SMTP_FROM: string;
+  SMTP_TO: string;
 }
 
 function Settings() {
@@ -78,6 +79,7 @@ function Settings() {
               <label htmlFor="interestRate">Interest Rate (%)</label>
               <InputNumber
                 id="interestRate"
+                 className="ml-2"
                 value={settings.interestRate * 100}
                 onValueChange={(e) => {
                   if (e.value !== null && e.value !== undefined) {
@@ -100,9 +102,10 @@ function Settings() {
         <TabPanel header="Email Settings">
           <div className="flex flex-column gap-3">
             <div className="field">
-              <label htmlFor="smtpHost">SMTP Host</label>
+              <label htmlFor="smtpHost">SMTP Host </label>
               <InputText
                 id="smtpHost"
+                className="ml-2"
                 value={settings.SMTP_HOST}
                 onChange={(e) => handleUpdate({ SMTP_HOST: e.target.value })}
               />
@@ -112,6 +115,7 @@ function Settings() {
               <label htmlFor="smtpPort">SMTP Port</label>
               <InputNumber
                 id="smtpPort"
+                 className="ml-2"
                 value={settings.SMTP_PORT}
                 onValueChange={(e) => {
                   if (e.value !== null) {
@@ -127,6 +131,7 @@ function Settings() {
               <label htmlFor="smtpUser">SMTP User</label>
               <InputText
                 id="smtpUser"
+                 className="ml-2"
                 value={settings.SMTP_USER}
                 onChange={(e) => handleUpdate({ SMTP_USER: e.target.value })}
               />
@@ -136,6 +141,7 @@ function Settings() {
               <label htmlFor="smtpPassword">SMTP Password</label>
               <Password
                 id="smtpPassword"
+                 className="ml-2"
                 value={settings.SMTP_PASSWORD}
                 onChange={(e) =>
                   handleUpdate({ SMTP_PASSWORD: e.target.value })
@@ -149,8 +155,18 @@ function Settings() {
               <label htmlFor="smtpFrom">From Email</label>
               <InputText
                 id="smtpFrom"
+                 className="ml-2"
                 value={settings.SMTP_FROM}
                 onChange={(e) => handleUpdate({ SMTP_FROM: e.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="smtpTo">To Email</label>
+              <InputText
+                id="smtpTo"
+                 className="ml-2"
+                value={settings.SMTP_TO}
+                onChange={(e) => handleUpdate({ SMTP_TO: e.target.value })}
               />
             </div>
           </div>

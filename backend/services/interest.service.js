@@ -42,23 +42,37 @@ class InterestService {
 
   static async updateMonthlyPrincipal() {
     console.log("updateMonthlyPrincipal function started");
+  
     const session = await mongoose.startSession();
     session.startTransaction();
-
+  
     try {
-      const applications = await Application.find({ status: "approved" });
-
+      const applications = await Application.find({ status: "approved" }).session(session);
+  
+      if (applications.length === 0) {
+        console.log("No approved applications found.");
+        await session.abortTransaction();
+        return;
+      }
+  
       for (const app of applications) {
         const interests = await Interest.find({
           userID: app.userID,
           accumulatedInterest: false,
-        });
-
+        }).session(session);
+  
+        if (interests.length === 0) {
+          console.log(`No interests found for user ${app.userID}.`);
+          continue;
+        }
+  
         const totalInterest = interests.reduce(
-          (sum, interest) => sum + interest.totalInterest,
+          (sum, interest) => sum + interest.dailyInterest,
           0
         );
-
+  
+        console.log(`Total interest for user ${app.userID}: ${totalInterest}`);
+  
         await Promise.all([
           Interest.updateMany(
             { userID: app.userID, accumulatedInterest: false },
@@ -72,15 +86,24 @@ class InterestService {
           ),
         ]);
       }
-
+  
       await session.commitTransaction();
+      console.log("Monthly principal update completed successfully.");
     } catch (error) {
       console.error("Error in monthly principal update:", error);
-      await session.abortTransaction();
+  
+      try {
+        await session.abortTransaction();
+        console.log("Transaction aborted.");
+      } catch (abortError) {
+        console.error("Error while aborting transaction:", abortError);
+      }
     } finally {
       session.endSession();
+      console.log("Session ended.");
     }
   }
+  
 }
 
 module.exports = InterestService;
