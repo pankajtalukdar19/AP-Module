@@ -57,21 +57,26 @@ module.exports = {
         accumulatedInterest: false,
       });
 
+      const currentMonthInterest = interest.reduce((acc, item) => {
+        return acc + item.dailyInterest;
+      }, 0);
       //Get the application
       const application = await Application.findOne({
         userID,
         status: "approved",
       });
 
+      const onlyInterest =
+        application?.calculatedInvoiceAmount - application?.invoiceAmount;
+
       res.json({
         success: true,
         data: {
           calculatedInvoiceAmount: application?.calculatedInvoiceAmount || 0,
           principalAmount: application?.invoiceAmount || 0,
-          totalInterest:
-            application?.calculatedInvoiceAmount - application?.invoiceAmount ||
-            0,
+          totalInterest: onlyInterest + currentMonthInterest || 0,
           interestRate: application?.interestRate || 0,
+          currentMonthInterest: currentMonthInterest || 0,
         },
       });
     } catch (error) {

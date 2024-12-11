@@ -88,9 +88,9 @@ function MyInterestPage() {
 
         <div className="col-12 md:col-3">
           <Card className="bg-purple-50">
-            <div className="text-xl mb-2">Interest Rate</div>
+            <div className="text-xl mb-2">Current Month Interest</div>
             <div className="text-2xl font-bold">
-              {rateTemplate(interestSummary?.interestRate || 0)}
+              {amountTemplate(interestSummary?.currentMonthInterest || 0)}
             </div>
           </Card>
         </div>
@@ -149,21 +149,21 @@ function MyInterestPage() {
           <div className="col-12 md:col-4">
             <div className="text-lg mb-2">Opening Balance</div>
             <div className="text-xl">
-              {amountTemplate(interestDetail?.principalAmount || 0)}
+              {amountTemplate(interestSummary?.calculatedInvoiceAmount || 0)}
             </div>
           </div>
           <div className="col-12 md:col-4">
             <div className="text-lg mb-2">Interest Accumulated</div>
             <div className="text-xl">
-              {amountTemplate(interestDetail?.totalInterest || 0)}
+              {amountTemplate(interestSummary?.currentMonthInterest || 0)}
             </div>
           </div>
           <div className="col-12 md:col-4">
             <div className="text-lg mb-2">Closing Balance</div>
             <div className="text-xl">
               {amountTemplate(
-                (interestDetail?.principalAmount || 0) +
-                  (interestDetail?.totalInterest || 0)
+                (interestSummary?.calculatedInvoiceAmount || 0) +
+                  (interestSummary?.totalInterest || 0)
               )}
             </div>
           </div>
