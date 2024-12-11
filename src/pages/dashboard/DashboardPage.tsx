@@ -33,7 +33,6 @@ type FormValues = {
 function DashboardPage() {
   const user = useAppSelector((state) => state.auth.user);
   const toast = useRef<Toast>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
 
   const [formValues, setFormValues] = useState<FormValues>({
@@ -71,14 +70,14 @@ function DashboardPage() {
     }));
   };
 
-  const handleFileUpload = (e: any) => {
-    console.log('e', e?.files[0]);
+  // const handleFileUpload = (e: any) => {
+  //   console.log('e', e?.files[0]);
 
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      invoiceCopy: e.files[0],
-    }));
-  };
+  //   setFormValues((prevValues) => ({
+  //     ...prevValues,
+  //     invoiceCopy: e.files[0],
+  //   }));
+  // };
 
   const handleRatioChange = (e: any, field: "partialRatio1" | "partialRatio2") => {
     const value = parseFloat(e.value);
