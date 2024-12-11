@@ -40,5 +40,5 @@ export const twoDecimalPoints = (value: number) => {
 };
 
 export const formatDate = (date: string) => {
-  return moment(date).format("DD/MM/YYYY");
+  return moment(date).format("DD-MM-YYYY HH:mm:ss A");
 };
