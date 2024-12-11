@@ -1,0 +1,112 @@
+//Primary
+$primaryXlight: #f8fafc;
+$primarylight: #f1f5f9;
+$primaryMedium: #f0f4ff;
+$primaryDark: #6d96ff;
+$primaryXDark: #1658ff;
+
+//secondary
+$secondaryXlight: #f6f7fa;
+$secondarylight: #f0f1f8;
+$secondaryMedium: #e0e5ec;
+$secondaryDark: #667085;
+$secondaryXDark: #667085;
+
+//danger
+$dangerlight: #ffebee;
+$dangerMedium: #f97316;
+$dangerDark: #f97316;
+
+//success
+$successlight: #e0ffe7;
+$successMedium: #22c55e;
+$successDark: #22c55e;
+
+//info
+$infolight: #f0f4ff;
+$infoMedium: #1658ff;
+$infoDark: #1658ff;
+
+//warning
+$warninglight: #ffc107;
+$warningMedium: #ffc107;
+$warningDark: #f97316;
+
+//extra Colors
+$csv: #e99c7b;
+$logs: #6d96ff;
+
+//colors
+$black: #000000;
+$white: #ffffff;
+
+//Main Color Map for website
+$primary: $primaryDark;
+$secondary: $secondaryXDark;
+$success: $successDark;
+$danger: $dangerDark;
+$info: $infoDark;
+$warning: $warningDark;
+
+$dark: $secondaryDark;
+$muted: $primarylight;
+$light: $primaryXlight;
+
+//Default Colors for website
+$border: $secondaryMedium;
+$body: $secondaryXlight;
+$heading: $secondaryXDark;
+$text: $secondaryDark;
+
+$primaryFont: "DM Sans", sans-serif;
+$fontSize: 1rem;
+$smallFontSize: 0.875rem;
+$largeFontSize: 1.25rem;
+
+$fontWeight: 400;
+$fontWeightNormal: 400;
+$fontWeightBold: 700;
+$lineHeight: 1.5;
+
+$baseInputFontSize: 0.875rem;
+$baseInputLabelFontSize: 0.875rem;
+
+/* colors.css */
+$colors: (
+  primary: $primary,
+  primaryDark: $primaryXDark,
+  secondary: $secondary,
+  success: $success,
+  warning: $warning,
+  danger: $danger,
+  info: $info,
+  black: $black,
+  white: $white,
+  logs: $logs,
+  csv: $csv,
+  light: $light,
+  dark: $heading,
+  heading: $heading,
+);
+
+// Background Color Utility Classes
+@each $name, $color in $colors {
+  #{".bg-" + $name} {
+    background-color: $color !important;
+  }
+}
+
+// Background Color Utility Classes
+@each $name, $color in $colors {
+  #{".bg-soft-" + $name} {
+    color: $color;
+    background-color: rgba($color, 0.1) !important;
+  }
+}
+
+// Text Color Utility Classes
+@each $name, $color in $colors {
+  #{".text-" + $name} {
+    color: $color !important;
+  }
+}

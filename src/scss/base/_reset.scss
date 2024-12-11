@@ -1,0 +1,270 @@
+::-moz-selection {
+  background-color: $primary;
+  color: $white;
+}
+
+::selection {
+  background-color: $primary;
+  color: $white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: $text;
+  background-color: $body;
+  font-family: $primaryFont;
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $primaryFont;
+  color: $heading;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+  color: $primary;
+  text-decoration: none;
+  &:hover {
+    color: darken($primary, 5%);
+  }
+}
+.h1,
+h1 {
+  font-size: 1.875rem;
+  line-height: 2.375rem;
+}
+.h2,
+h2 {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.h3,
+h3 {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.h4,
+h4 {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.h5,
+h5 {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.h6,
+h6 {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  font-family: $primaryFont;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+  color: $text;
+}
+
+.h-100 {
+  height: 100%;
+}
+.vh-100 {
+  height: 100vh;
+}
+.w-100 {
+  width: 100%;
+}
+.vw-100 {
+  width: 100vh;
+}
+.fw-200 {
+  font-weight: 200;
+}
+.fw-light,
+.fw-300 {
+  font-weight: 300;
+}
+.fw-normal,
+.fw-400 {
+  font-weight: 400;
+}
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.fw-bold,
+.fw-700 {
+  font-weight: 700;
+}
+.fw-800 {
+  font-weight: 800;
+}
+
+.display-1 {
+  font-size: 4.5rem;
+  line-height: 5.625rem;
+}
+
+.display-2 {
+  font-size: 3.75rem;
+  line-height: 4.5rem;
+}
+
+.display-3 {
+  font-size: 3rem;
+  line-height: 3.75;
+}
+
+.display-4 {
+  font-size: 2.25rem;
+  line-height: 2.75rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+.border {
+  border: 0.0625rem solid $border;
+}
+.border-0 {
+  border: 0rem solid $border;
+}
+.border-top {
+  border-top: 0.0625rem solid $border;
+}
+
+.border-left {
+  border-left: 0.0625rem solid $border;
+}
+
+.border-right {
+  border-right: 0.0625rem solid $border;
+}
+
+.border-bottom {
+  border-bottom: 0.0625rem solid $border;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.text-end,
+.text-right {
+  text-align: right;
+}
+
+.text-start,
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.p-progressbar {
+  background-color: $primarylight;
+  .p-progressbar-value {
+    background-color: $primary;
+  }
+
+  .p-progressbar-label {
+    display: none;
+  }
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.svg-icon {
+  height: inherit;
+}
+.border {
+  border: 0.0625rem solid $border;
+}
+
+.border-0 {
+  border: 0rem solid $border;
+}
+
+.border-top {
+  border-top: 0.0625rem solid $border;
+}
+
+.border-left {
+  border-left: 0.0625rem solid $border;
+}
+
+.border-right {
+  border-right: 0.0625rem solid $border;
+}
+
+.border-bottom {
+  border-bottom: 0.0625rem solid $border;
+}
+
+.rounded {
+  border-radius: 0.5rem;
+}
+
+.rounded-lg {
+  border-radius: 0.75rem;
+}
+
+.rounded-circle {
+  border-radius: 50%;
+}
+
+.rounded-0 {
+  border-radius: 0;
+}
+
+.rounded-sm {
+  border-radius: 0.25rem;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}

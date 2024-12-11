@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyalty Points System - Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f5f5f5;
+        }
+        .improvement {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .relationship {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Loyalty Points System Documentation</h1>
+
+    <div class="section">
+        <h2>Database Design</h2>
+
+        <h3>1. User Model</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>_id</td>
+                <td>ObjectId</td>
+                <td>Unique identifier</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>String</td>
+                <td>User's full name</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>String</td>
+                <td>User's email address</td>
+            </tr>
+            <tr>
+                <td>phoneNumber</td>
+                <td>String</td>
+                <td>User's phone number</td>
+            </tr>
+            <tr>
+                <td>role</td>
+                <td>String</td>
+                <td>user/vendor/admin</td>
+            </tr>
+            <tr>
+                <td>points_available</td>
+                <td>Number</td>
+                <td>Current points balance</td>
+            </tr>
+            <tr>
+                <td>points_redeemed</td>
+                <td>Number</td>
+                <td>Total points redeemed</td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>String</td>
+                <td>active/inactive/suspended</td>
+            </tr>
+        </table>
+        <p class="relationship">Relationships: One-to-Many with Transactions, Addresses, ReturnRequests</p>
+
+        <h3>2. VendorProfile Model</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>vendor</td>
+                <td>ObjectId (ref: User)</td>
+                <td>Reference to vendor user</td>
+            </tr>
+            <tr>
+                <td>businessName</td>
+                <td>String</td>
+                <td>Name of the business</td>
+            </tr>
+            <tr>
+                <td>businessType</td>
+                <td>String</td>
+                <td>Type of business</td>
+            </tr>
+            <tr>
+                <td>categories</td>
+                <td>[String]</td>
+                <td>Business categories</td>
+            </tr>
+            <tr>
+                <td>contactPerson</td>
+                <td>Object</td>
+                <td>Contact details</td>
+            </tr>
+            <tr>
+                <td>bankDetails</td>
+                <td>Object</td>
+                <td>Banking information</td>
+            </tr>
+        </table>
+        <p class="relationship">Relationships: One-to-One with User, One-to-Many with SpecialOffers</p>
+
+        <h3>3. Transaction Model</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>userId</td>
+                <td>ObjectId (ref: User)</td>
+                <td>User who made transaction</td>
+            </tr>
+            <tr>
+                <td>vendorId</td>
+                <td>ObjectId (ref: User)</td>
+                <td>Vendor involved</td>
+            </tr>
+            <tr>
+                <td>points</td>
+                <td>Number</td>
+                <td>Points involved</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>String</td>
+                <td>earn/redeem/return</td>
+            </tr>
+            <tr>
+                <td>metadata</td>
+                <td>Object</td>
+                <td>{
+                    invoiceNumber?: string,
+                    orderNumber?: string,
+                    returnRequestId?: ObjectId
+                }</td>
+            </tr>
+        </table>
+
+        <h3>4. PointsConfig Model</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>conversionRate</td>
+                <td>Object</td>
+                <td>{
+                    pointsPerCurrency: number,
+                    minimumAmount: number
+                }</td>
+            </tr>
+            <tr>
+                <td>rules</td>
+                <td>[Object]</td>
+                <td>[{
+                    name: string,
+                    description: string,
+                    multiplier: number,
+                    conditions: {
+                        minAmount?: number,
+                        maxAmount?: number,
+                        category?: string,
+                        dayOfWeek?: string[],
+                        timeOfDay?: {
+                            start: string,
+                            end: string
+                        }
+                    },
+                    isActive: boolean
+                }]</td>
+            </tr>
+            <tr>
+                <td>specialOffers</td>
+                <td>[Object]</td>
+                <td>[{
+                    name: string,
+                    description: string,
+                    bonusPoints: number,
+                    validFrom: Date,
+                    validUntil: Date,
+                    conditions: {
+                        minAmount?: number,
+                        maxAmount?: number,
+                        category?: string
+                    },
+                    isActive: boolean
+                }]</td>
+            </tr>
+        </table>
+
+        <h3>5. Invoice Model</h3>
+        <table class="table">
+            <tr>
+                <td>items</td>
+                <td>[Object]</td>
+                <td>[{
+                    name: string,
+                    quantity: number,
+                    price: number,
+                    total: number
+                }]</td>
+            </tr>
+        </table>
+
+        <h3>6. Dues Model</h3>
+        <table class="table">
+            <tr>
+                <td>payments</td>
+                <td>[Object]</td>
+                <td>[{
+                    amount: number,
+                    paymentDate: Date,
+                    paymentType: string,
+                    pointsUsed: number
+                }]</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Missing Features & Improvements</h2>
+
+        <div class="improvement">
+            <h3>1. Security Enhancements</h3>
+            <ul>
+                <li>Implement rate limiting for API endpoints</li>
+                <li>Add request validation middleware</li>
+                <li>Implement API key authentication for vendor integrations</li>
+                <li>Add two-factor authentication option</li>
+            </ul>
+        </div>
+
+        <div class="improvement">
+            <h3>2. Database Improvements</h3>
+            <ul>
+                <li>Add indexes for frequently queried fields</li>
+                <li>Implement soft delete for all models</li>
+                <li>Add audit trails for sensitive operations</li>
+                <li>Implement database transactions for critical operations</li>
+            </ul>
+        </div>
+
+        <div class="improvement">
+            <h3>3. New Features</h3>
+            <ul>
+                <li>Points expiry system</li>
+                <li>Referral program</li>
+                <li>Tiered loyalty levels</li>
+                <li>Automated notifications system</li>
+                <li>Analytics dashboard</li>
+                <li>Bulk operations for admin</li>
+                <li>Report generation</li>
+            </ul>
+        </div>
+
+        <div class="improvement">
+            <h3>4. Performance Improvements</h3>
+            <ul>
+                <li>Implement caching for frequently accessed data</li>
+                <li>Add pagination for all list endpoints</li>
+                <li>Optimize database queries</li>
+                <li>Implement server-side filtering and sorting</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>API Documentation</h2>
+        <p>Base URL: /api/v1</p>
+
+        <h3>Authentication Endpoints</h3>
+        <ul>
+            <li>POST /auth/login</li>
+            <li>POST /auth/verify-otp</li>
+            <li>POST /auth/refresh-token</li>
+        </ul>
+
+        <h3>User Endpoints</h3>
+        <ul>
+            <li>GET /users</li>
+            <li>GET /users/:id</li>
+            <li>PUT /users/:id</li>
+            <li>GET /users/:id/transactions</li>
+        </ul>
+
+        <h3>Vendor Endpoints</h3>
+        <ul>
+            <li>GET /vendor-profile</li>
+            <li>PUT /vendor-profile</li>
+            <li>POST /vendor-profile/special-offers</li>
+            <li>GET /vendor/transactions</li>
+        </ul>
+
+        <h3>Points Configuration Endpoints</h3>
+        <ul>
+            <li>GET /points-config</li>
+            <li>PUT /points-config/conversion-rate</li>
+            <li>POST /points-config/rules</li>
+            <li>PUT /points-config/rules/:id</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Future Roadmap</h2>
+        <ol>
+            <li>Mobile application development</li>
+            <li>Integration with popular e-commerce platforms</li>
+            <li>Advanced analytics and reporting</li>
+            <li>Machine learning for fraud detection</li>
+            <li>Internationalization support</li>
+            <li>Blockchain integration for points tracking</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Product Management Flow</h2>
+
+        <h3>1. Data Models</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>String</td>
+                <td>Product name (required)</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>String</td>
+                <td>Product description (optional)</td>
+            </tr>
+            <tr>
+                <td>price</td>
+                <td>Number</td>
+                <td>Product price (required)</td>
+            </tr>
+            <tr>
+                <td>category</td>
+                <td>String</td>
+                <td>Product category (required)</td>
+            </tr>
+            <tr>
+                <td>createdBy</td>
+                <td>ObjectId</td>
+                <td>Reference to vendor user (required)</td>
+            </tr>
+        </table>
+
+        <h3>2. API Endpoints</h3>
+        <table class="table">
+            <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>/product</td>
+                <td>POST</td>
+                <td>Create new product</td>
+            </tr>
+            <tr>
+                <td>/product/:id</td>
+                <td>GET</td>
+                <td>Get products by vendor ID</td>
+            </tr>
+            <tr>
+                <td>/product/:id</td>
+                <td>PUT</td>
+                <td>Update product</td>
+            </tr>
+            <tr>
+                <td>/product/:id</td>
+                <td>DELETE</td>
+                <td>Delete product</td>
+            </tr>
+        </table>
+
+        <h3>3. Frontend Flow</h3>
+        <div class="improvement">
+            <h4>Product Creation</h4>
+            <ol>
+                <li>Vendor navigates to Products page</li>
+                <li>Clicks "Create New Product" button</li>
+                <li>Dialog opens with form fields:
+                    <ul>
+                        <li>Product Name (required)</li>
+                        <li>Description</li>
+                        <li>Price (required)</li>
+                        <li>Category (required, from system settings)</li>
+                    </ul>
+                </li>
+                <li>On save:
+                    <ul>
+                        <li>Form data validation</li>
+                        <li>API call to create product</li>
+                        <li>Product list refreshes</li>
+                        <li>Dialog closes</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="improvement">
+            <h4>Product Management</h4>
+            <ul>
+                <li>Products displayed in DataTable with columns:
+                    <ul>
+                        <li>Product Name</li>
+                        <li>Description</li>
+                        <li>Price</li>
+                        <li>Category</li>
+                        <li>Actions (Edit/Delete)</li>
+                    </ul>
+                </li>
+                <li>Edit: Opens same dialog with pre-filled data</li>
+                <li>Delete: Removes product after confirmation</li>
+            </ul>
+        </div>
+
+        <h3>4. Integration Points</h3>
+        <div class="improvement">
+            <ul>
+                <li>Products used in Order creation flow</li>
+                <li>Categories managed through system settings</li>
+                <li>Product prices affect points calculation</li>
+                <li>Vendor-specific product listing</li>
+            </ul>
+        </div>
+
+        <h3>5. Security Considerations</h3>
+        <div class="improvement">
+            <ul>
+                <li>Vendor authentication required</li>
+                <li>Vendors can only manage their own products</li>
+                <li>Input validation on both frontend and backend</li>
+                <li>Price validation to prevent negative values</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Order Management Flow</h2>
+
+        <h3>1. Order Model</h3>
+        <table class="table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>vendor</td>
+                <td>ObjectId</td>
+                <td>Reference to vendor user (required)</td>
+            </tr>
+            <tr>
+                <td>orderNumber</td>
+                <td>String</td>
+                <td>Auto-generated unique order number (ORD000001)</td>
+            </tr>
+            <tr>
+                <td>items</td>
+                <td>[Object]</td>
+                <td>[{
+                    productId: String,
+                    title: String,
+                    quantity: Number,
+                    price: Number
+                }]</td>
+            </tr>
+            <tr>
+                <td>totalAmount</td>
+                <td>Number</td>
+                <td>Total order amount (required)</td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>String</td>
+                <td>pending/processing/completed/cancelled</td>
+            </tr>
+            <tr>
+                <td>orderId</td>
+                <td>String</td>
+                <td>External order reference (optional)</td>
+            </tr>
+        </table>
+
+        <h3>2. API Endpoints</h3>
+        <table class="table">
+            <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>/orders</td>
+                <td>GET</td>
+                <td>Get all products for order creation</td>
+            </tr>
+            <tr>
+                <td>/orders</td>
+                <td>POST</td>
+                <td>Create new order</td>
+            </tr>
+            <tr>
+                <td>/orders/vendor-orders</td>
+                <td>GET</td>
+                <td>Get vendor's orders</td>
+            </tr>
+            <tr>
+                <td>/orders/preview</td>
+                <td>POST</td>
+                <td>Calculate order preview with coupon</td>
+            </tr>
+        </table>
+
+        <h3>3. Order Creation Flow</h3>
+        <div class="improvement">
+            <h4>Frontend Process</h4>
+            <ol>
+                <li>Vendor navigates to Orders page</li>
+                <li>Clicks "Create Order" button</li>
+                <li>Dialog opens with order creation form:
+                    <ul>
+                        <li>Category selection (from system settings)</li>
+                        <li>Product selection (filtered by category)</li>
+                        <li>Quantity input</li>
+                        <li>Add multiple items to order</li>
+                    </ul>
+                </li>
+                <li>Order Summary:
+                    <ul>
+                        <li>Items list with quantity and price</li>
+                        <li>Total amount calculation</li>
+                        <li>Option to remove items</li>
+                    </ul>
+                </li>
+                <li>Coupon Application:
+                    <ul>
+                        <li>Input field for coupon code</li>
+                        <li>Validate coupon through API</li>
+                        <li>Preview order with applied discount:
+                            <ul>
+                                <li>Original amount</li>
+                                <li>Discount amount</li>
+                                <li>Final amount after discount</li>
+                            </ul>
+                        </li>
+                        <li>Option to remove applied coupon</li>
+                    </ul>
+                </li>
+                <li>Order Creation:
+                    <ul>
+                        <li>Validation of required fields</li>
+                        <li>API call to create order with coupon data</li>
+                        <li>Order list refresh</li>
+                        <li>Success notification</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <h3>4. Order Processing</h3>
+        <div class="improvement">
+            <h4>Backend Flow</h4>
+            <ol>
+                <li>Order Creation:
+                    <ul>
+                        <li>Validate order data</li>
+                        <li>Generate unique order number</li>
+                        <li>Calculate final amount</li>
+                        <li>Apply coupon if provided</li>
+                        <li>Create order record</li>
+                    </ul>
+                </li>
+                <li>Related Operations:
+                    <ul>
+                        <li>Create invoice record</li>
+                        <li>Record coupon transaction if applicable</li>
+                        <li>Update product inventory (if implemented)</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <h3>5. Order Management Features</h3>
+        <div class="improvement">
+            <ul>
+                <li>Order listing with status indicators</li>
+                <li>Order filtering and sorting</li>
+                <li>Order status updates</li>
+                <li>Order details view</li>
+                <li>Date-based order tracking</li>
+            </ul>
+        </div>
+
+        <h3>6. Integration Points</h3>
+        <div class="improvement">
+            <ul>
+                <li>Product management system</li>
+                <li>Coupon system for discounts</li>
+                <li>Invoice generation</li>
+                <li>Points calculation system</li>
+                <li>Vendor profile management</li>
+            </ul>
+        </div>
+
+        <h3>7. Security & Validation</h3>
+        <div class="improvement">
+            <ul>
+                <li>Authentication middleware for all order endpoints</li>
+                <li>Vendor-specific order access</li>
+                <li>Input validation for order creation</li>
+                <li>Amount and quantity validation</li>
+                <li>Status transition validation</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

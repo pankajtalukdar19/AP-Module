@@ -1,0 +1,728 @@
+button {
+  font-family: $primaryFont;
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: unset;
+  line-height: 0;
+  font-size: 0.9rem;
+}
+
+.p-button {
+  font-family: $primaryFont;
+  font-weight: 400;
+  background-color: $primary;
+  border: 0.0625rem solid $primary;
+  color: $white;
+  height: 2.3125rem;
+  padding: 0rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 0.375rem;
+  justify-content: center;
+
+  > svg {
+    height: 1.25rem;
+  }
+
+  &.p-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .p-button-label {
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    flex: unset;
+  }
+
+  .p-button-icon,
+  .p-button-icon-left {
+    margin-right: 0.5rem;
+    margin-left: 0rem;
+    display: inline-flex;
+    align-items: center;
+    > svg {
+      height: 1.25rem;
+    }
+  }
+  .p-button-icon-right {
+    margin-left: 0.5rem;
+    margin-right: 0rem;
+    display: inline-flex;
+    align-items: center;
+    > svg {
+      height: 1.25rem;
+    }
+  }
+
+  &.p-button-icon-only {
+    width: 2.3125rem;
+    padding: 0 !important;
+    .p-button-icon,
+    .p-button-icon-left,
+    .p-button-icon-right {
+      margin: 0;
+    }
+  }
+
+  &.p-button-sm {
+    height: 2.125rem;
+    font-size: 0.75rem;
+    &.p-button-icon-only {
+      width: 2.125rem;
+      .p-button-icon-left,
+      .p-button-icon-right {
+        margin: 0;
+      }
+    }
+  }
+
+  &.p-button-lg {
+    height: 2.5rem;
+    font-size: 1rem;
+    &.p-button-icon-only {
+      width: 2.5rem;
+      .p-button-icon,
+      .p-button-icon-left,
+      .p-button-icon-right {
+        margin: 0;
+      }
+    }
+  }
+
+  &.p-button-xl {
+    height: 2.75rem;
+    font-size: 1rem;
+    &.p-button-icon-only {
+      width: 2.75rem;
+      .p-button-icon,
+      .p-button-icon-left,
+      .p-button-icon-right {
+        margin: 0;
+      }
+    }
+  }
+
+  &.w-100 {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  &.p-button-text {
+    height: unset !important;
+    border: unset !important;
+    padding: 0 !important;
+  }
+
+  &.no-focus {
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+  &.dropdown-active {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-width: 0 !important;
+  }
+}
+
+.p-button-light {
+  border: 0.0625rem solid $secondaryMedium;
+  color: $secondaryXDark;
+  background-color: $primaryXlight;
+  box-shadow: 0 0.0625rem 0.125rem 0 rgba($primaryXDark, 0.05);
+
+  &:not(:disabled):hover {
+    border: 0.0625rem solid $primaryXDark;
+  }
+
+  &:not(:disabled):active {
+    border: 0.0625rem solid $primaryXDark;
+  }
+
+  &.p-button-outlined {
+    color: $primary;
+    background-color: $white;
+    border-color: $primary;
+
+    &:not(:disabled):hover {
+      background-color: $primary;
+      border-color: $primaryXDark;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $primary;
+    background-color: transparent;
+    border: none;
+    box-shadow: none !important;
+    &:not(:disabled):hover {
+      color: $primaryXDark;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.09375rem $primaryMedium;
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($primary, 10%);
+    color: $white;
+  }
+}
+
+.p-button-primary {
+  border: 0.0625rem solid $primary;
+  color: $white;
+  background-color: $primary;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($primaryXDark, 0.05);
+
+  &:not(:disabled):hover {
+    border: 0.0625rem solid $primaryXDark;
+  }
+
+  &:not(:disabled):active {
+    border: 0.0625rem solid $primaryXDark;
+  }
+
+  &.p-button-outlined {
+    color: $primary;
+    background-color: $white;
+    border-color: $primary;
+
+    &:not(:disabled):hover {
+      background-color: $primary;
+      border-color: $primaryXDark;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $primary;
+    background-color: transparent;
+    border: none;
+    box-shadow: none !important;
+    &:not(:disabled):hover {
+      color: $primaryXDark;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem $primaryMedium;
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($primary, 10%);
+    color: $white;
+  }
+}
+
+.p-button-danger {
+  border: 0.0625rem solid $danger;
+  color: $white;
+  background-color: $danger;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($danger, 0.05);
+
+  &:not(:disabled):hover {
+    background-color: $dangerMedium;
+  }
+
+  &:not(:disabled):active {
+    background-color: $dangerMedium;
+  }
+
+  &.p-button-outlined {
+    color: $danger;
+    background-color: $white;
+    border-color: $danger;
+
+    &:not(:disabled):hover {
+      background-color: $dangerMedium;
+      border-color: $danger;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $dangerMedium;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    &:not(:disabled):hover {
+      color: $danger;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem lighten($dangerMedium, 10%);
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($dangerMedium, 10%);
+    color: $white;
+  }
+}
+
+.p-button-success {
+  border: 0.0625rem solid $success;
+  color: $white;
+  background-color: $successMedium;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($success, 0.05);
+
+  &:not(:disabled):hover {
+    background-color: $success;
+  }
+
+  &:not(:disabled):active {
+    background-color: $success;
+  }
+
+  &.p-button-outlined {
+    color: $successMedium;
+    background-color: $white;
+    border-color: $successMedium;
+    &:not(:disabled):hover {
+      background-color: $successMedium;
+      border-color: $success;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $successMedium;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    &:not(:disabled):hover {
+      color: $success;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem $successMedium;
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($successMedium, 10%);
+    color: $white;
+  }
+}
+
+.p-button-info {
+  border: 0.0625rem solid $info;
+  color: $white;
+  background-color: $infoMedium;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($info, 0.05);
+
+  &:not(:disabled):hover {
+    background-color: $info;
+  }
+
+  &:not(:disabled):active {
+    background-color: $info;
+  }
+
+  &.p-button-outlined {
+    color: $infoMedium;
+    background-color: $white;
+    border-color: $infoMedium;
+    &:not(:disabled):hover {
+      background-color: $infoMedium;
+      border-color: $info;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $infoMedium;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    &:not(:disabled):hover {
+      color: $info;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem lighten($infoMedium, 30%);
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($infoMedium, 30%);
+    color: $white;
+  }
+}
+
+.p-button-warning {
+  border: 0.0625rem solid $warning;
+  color: $white;
+  background-color: $warningMedium;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($warning, 0.05);
+
+  &:not(:disabled):hover {
+    background-color: $warning;
+  }
+
+  &:not(:disabled):active {
+    background-color: $warning;
+  }
+
+  &.p-button-outlined {
+    color: $warningMedium;
+    background-color: $white;
+    border-color: $warningMedium;
+    &:not(:disabled):hover {
+      background-color: $warningMedium;
+      border-color: $warning;
+      color: $white;
+    }
+  }
+
+  &.p-button-text {
+    color: $warningMedium;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    &:not(:disabled):hover {
+      color: $warning;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem $warningMedium;
+  }
+
+  &.p-button:disabled {
+    background-color: lighten($warningMedium, 30%);
+    color: $white;
+  }
+}
+
+.p-button-secondary {
+  border: 0.0625rem solid $secondaryXDark;
+  color: $white;
+  background-color: $secondary;
+  box-shadow: 0px 0.0625rem 0.125rem 0px rgba($secondaryXDark, 0.05);
+
+  &:not(:disabled):hover {
+    background-color: $secondaryXDark;
+  }
+
+  &:not(:disabled):active {
+    background-color: $secondaryXDark;
+  }
+
+  &.p-button-outlined {
+    color: $secondaryDark;
+    background-color: $white;
+    border-color: $secondaryMedium;
+    &:not(:disabled):hover {
+      background-color: $secondarylight;
+      border-color: $secondaryMedium;
+      color: $secondaryXDark;
+    }
+  }
+
+  &.p-button-text {
+    color: $secondaryDark;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    &:not(:disabled):hover {
+      color: $secondaryDark;
+      background-color: transparent;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 0.09375rem $secondaryMedium;
+  }
+}
+
+@each $name, $color in $colors {
+  #{".p-button-soft-" + $name} {
+    border: 0.0625rem solid rgba($color, 0.1);
+    color: if(
+      $color ==
+        $light or
+        $color ==
+        $white or
+        $color ==
+        $body or
+        $color ==
+        $border,
+      $black,
+      $color
+    );
+    background-color: rgba($color, 0.1);
+
+    &:not(:disabled):hover {
+      background-color: rgba($color, 0.2);
+    }
+
+    &:not(:disabled):active {
+      background-color: rgba($color, 0.2);
+    }
+
+    &.p-button-outlined {
+      color: if(
+        $color ==
+          $light or
+          $color ==
+          $white or
+          $color ==
+          $body or
+          $color ==
+          $border,
+        $black,
+        $color
+      );
+      background-color: transparent;
+      border-color: $color;
+      &:not(:disabled):hover {
+        background-color: transparent;
+        border-color: darken($color, 5%);
+        color: darken(
+          if(
+            $color ==
+              $light or
+              $color ==
+              $white or
+              $color ==
+              $body or
+              $color ==
+              $border,
+            $black,
+            $color
+          ),
+          5%
+        );
+      }
+    }
+    &.p-button-text {
+      color: if(
+        $color ==
+          $light or
+          $color ==
+          $white or
+          $color ==
+          $body or
+          $color ==
+          $border,
+        $black,
+        $color
+      );
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      &:not(:disabled):hover {
+        color: darken(
+          if(
+            $color ==
+              $light or
+              $color ==
+              $white or
+              $color ==
+              $body or
+              $color ==
+              $border,
+            $black,
+            $color
+          ),
+          5%
+        );
+        background-color: transparent;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
+    &:focus {
+      box-shadow: 0 0 0 0.125rem #ffffff, 0 0 0 4px darken($color, 1%),
+        0 0.0625rem 0.125rem 0 rgb(0, 0, 0);
+    }
+  }
+}
+
+// storybook button styles
+.button-container {
+  display: inline-flex;
+  gap: 1rem;
+}
+
+.button-group {
+  display: flex;
+  > * {
+    justify-content: center;
+    border-radius: 0 !important;
+
+    &:first-child {
+      border-top-width: 0.0625rem !important;
+      border-left-width: 0.0625rem !important;
+      border-bottom-width: 0.0625rem !important;
+      border-top-left-radius: 0.25rem !important;
+      border-bottom-left-radius: 0.25rem !important;
+    }
+
+    &:last-child {
+      border-top-width: 0.0625rem !important;
+      border-right-width: 0.0625rem !important;
+      border-bottom-width: 0.0625rem !important;
+      border-top-right-radius: 0.25rem !important;
+      border-bottom-right-radius: 0.25rem !important;
+    }
+
+    &:focus {
+      box-shadow: unset !important;
+    }
+  }
+}
+
+// chat prompt toggle button
+.button-group-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.625rem;
+
+  .p-button-group {
+    background-color: #f0f0f0;
+    border: none;
+    color: #333;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.9375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+
+    &.active {
+      border: 0.0625rem solid $primaryXDark;
+      background-color: white;
+      font-weight: 500;
+      color: $primaryXDark;
+    }
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  gap: 0.5rem;
+
+  &-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  &-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  &-primary {
+    background-color: $primary;
+    color: $white;
+    border: 0.0625rem solid $primary;
+
+    &:hover {
+      background-color: darken($primary, 5%);
+      border-color: darken($primary, 5%);
+    }
+  }
+
+  &-outline {
+    background-color: transparent;
+    border: 0.0625rem solid $border;
+
+    &:hover {
+      background-color: $primarylight;
+      border-color: $primary;
+      color: $primary;
+    }
+  }
+
+  &-rounded {
+    border-radius: 9999px;
+  }
+
+  &-block {
+    width: 100%;
+  }
+}
+
+.icon-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0.0625rem solid $border;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $primarylight;
+    border-color: $primary;
+    color: $primary;
+  }
+
+  &-sm {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &-lg {
+    width: 3rem;
+    height: 3rem;
+  }
+}

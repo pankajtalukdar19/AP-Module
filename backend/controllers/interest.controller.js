@@ -1,75 +1,90 @@
-const interest = require('../models/interest_schema');
-const application = require('../models/application_schema');
-
-const interestRate = 15
-const perdayInterestRate = (interestRate / 365).toFixed(8);
-console.log('perdayInterestRate', perdayInterestRate);
-
+const Interest = require("../models/interest.model");
+const Application = require("../models/applications.model");
 module.exports = {
-    interest: async () => {
-        try {
+  // Get vendor's interest details
+  getVendorInterest: async (req, res) => {
+    try {
+      const interest = await Interest.find({
+        userID: req.user._id,
+      }).populate("applicationId");
 
+      if (!interest) {
+        return res.status(404).json({
+          success: false,
+          message: "No interest record found",
+        });
+      }
 
-            const applicationData = await application.find({
-                status: 'approved'
-            })
-
-            if (applicationData.length > 0) {
-
-                await Promise.all(
-                    applicationData.map(async (data) => {
-                        if (data) {
-                            const saveData = {
-                                vendorId: data.vendorName,
-                                invoiceAmount: data.calculatedInvoiceAmount ? data.calculatedInvoiceAmount : '0.00',
-                                interestRate: interestRate,
-                                perdayInterestRate: perdayInterestRate,
-                                interestAmount: (Number(data.calculatedInvoiceAmount) * perdayInterestRate).toFixed(2),
-                            };
-                            try {
-                                const interestData = new interest(saveData);
-                                await interestData.save();
-                            } catch (err) {
-                                console.error("Error saving data for application ID:", data._id, err.message);
-                            }
-                        }
-                    })
-                );
-
-            }
-
-            return
-
-
-        } catch (err) {
-            return err
-        }
-    },
-    getDataByDate: async (req, res) => {
-        try {
-            const { startDate, endDate, vendorId } = req.query;
-            const filter = {};
-
-
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                start.setHours(0, 0, 0);
-
-                const end = new Date(endDate);
-                end.setHours(23, 59, 59);
-
-                filter.createdAt = { $gte: start, $lte: end };
-            }
-            if (vendorId) {
-                filter.vendorId = vendorId;
-            }
-
-            const interestData = await interest.find(filter ? filter : "").populate('vendorId');
-
-            return res.status(200).json({ success: true, msg: "Applications retrieved successfully", interestData });
-        } catch (err) {
-            console.error('Error occurred:', err);
-            return res.status(500).json({ success: false, msg: "There was an error", error: err.message });
-        }
+      res.json({
+        success: true,
+        data: interest,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error fetching interest details",
+        error: error.message,
+      });
     }
-}
+  },
+
+  // Get all vendors' interest (admin only)
+  getAllInterest: async (req, res) => {
+    try {
+      const interests = await Interest.find()
+        .populate("userID", "name email businessName")
+        .populate("applicationId");
+
+      res.json({
+        success: true,
+        data: interests,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error fetching interest details",
+        error: error.message,
+      });
+    }
+  },
+
+  // Get interest summary for dashboard
+  getInterestSummary: async (req, res) => {
+    try {
+      const userID = req.user._id;
+      const interest = await Interest.find({
+        userID,
+        accumulatedInterest: false,
+      });
+
+      const currentMonthInterest = interest.reduce((acc, item) => {
+        return acc + item.dailyInterest;
+      }, 0);
+      //Get the application
+      const application = await Application.findOne({
+        userID,
+        status: "approved",
+      });
+
+      const onlyInterest =
+        application?.calculatedInvoiceAmount - application?.invoiceAmount;
+
+      res.json({
+        success: true,
+        data: {
+          calculatedInvoiceAmount: application?.calculatedInvoiceAmount || 0,
+          principalAmount: application?.invoiceAmount || 0,
+          totalInterest: onlyInterest + currentMonthInterest || 0,
+          interestRate: application?.interestRate || 0,
+          currentMonthInterest: currentMonthInterest || 0,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error fetching interest summary",
+        error: error.message,
+      });
+    }
+  },
+};
