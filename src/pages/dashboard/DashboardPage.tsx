@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Card } from "primereact/card";
 import { Dropdown } from "primereact/dropdown";
-import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
+import { FileUpload } from "primereact/fileupload";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { RadioButton } from "primereact/radiobutton";

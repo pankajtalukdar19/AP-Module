@@ -19,7 +19,7 @@ interface Settings {
 function Settings() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [, setSaving] = useState(false);
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
