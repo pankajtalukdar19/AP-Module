@@ -55,7 +55,7 @@ export const formatTimestamp = (isoTimestamp : string)=> {
   // Extract time components
   const hours = String(date.getUTCHours()).padStart(2, '0');
   const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  // const seconds = String(date.getUTCSeconds()).padStart(2, '0');
 
   // Format the date and time
   return `${day} ${month} ${year}, ${hours}:${minutes}`;
