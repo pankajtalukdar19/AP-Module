@@ -35,6 +35,7 @@ module.exports = {
   getAllInterest: async (req, res) => {
     try {
       const interests = await Interest.find()
+      .sort({ _id: -1 })
         .populate("userID", "name email businessName")
         .populate("applicationId");
 
