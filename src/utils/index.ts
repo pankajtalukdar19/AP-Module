@@ -42,3 +42,21 @@ export const twoDecimalPoints = (value: number) => {
 export const formatDate = (date: string) => {
   return moment(date).format("DD-MM-YYYY HH:mm:ss A");
 };
+
+export const formatTimestamp = (isoTimestamp : string)=> {
+  // Create a new Date object from the ISO string
+  const date = new Date(isoTimestamp);
+
+  // Extract date components
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  // Extract time components
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  // Format the date and time
+  return `${day} ${month} ${year}, ${hours}:${minutes}`;
+}

@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import { interestApi } from "@/api/interest.api";
-import { formatDate } from "@utils/index";
+import { formatDate, formatTimestamp } from "@utils/index";
 
 function InterestPage() {
   const [interests, setInterests] = useState([]);
@@ -150,7 +150,7 @@ function InterestPage() {
           <Column
             field="lastCalculatedDate"
             header="Last Calculated"
-            body={(rowData) => formatDate(rowData.lastCalculatedDate)}
+            body={(rowData) => formatTimestamp(rowData.lastCalculatedDate)}
             sortable
           />
         </DataTable>
