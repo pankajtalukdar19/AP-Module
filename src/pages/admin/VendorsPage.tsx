@@ -16,8 +16,8 @@ interface Vendor {
   name: string;
   email: string;
   phoneNumber: string;
-  businessName: string;
-  businessType: string;
+  // businessName: string;
+  // businessType: string;
   status: "active" | "inactive" | "suspended";
 }
 
@@ -32,8 +32,8 @@ function VendorsPage() {
     name: "",
     email: "",
     phoneNumber: "",
-    businessName: "",
-    businessType: "",
+    // businessName: "",
+    // businessType: "",
     status: "active",
   });
 
@@ -41,8 +41,8 @@ function VendorsPage() {
     name: "",
     email: "",
     phoneNumber: "",
-    businessName: "",
-    businessType: "",
+    // businessName: "",
+    // businessType: "",
     status: "",
   });
 
@@ -57,8 +57,8 @@ function VendorsPage() {
       name: "",
       email: "",
       phoneNumber: "",
-      businessName: "",
-      businessType: "",
+      // businessName: "",
+      // businessType: "",
       status: "",
     };
     let isValid = true;
@@ -88,16 +88,16 @@ function VendorsPage() {
     }
 
     // Business name validation
-    if (!formData?.businessName?.trim()) {
-      newErrors.businessName = "Business name is required";
-      isValid = false;
-    }
+    // if (!formData?.businessName?.trim()) {
+    //   newErrors.businessName = "Business name is required";
+    //   isValid = false;
+    // }
 
-    // Business type validation
-    if (!formData?.businessType?.trim()) {
-      newErrors.businessType = "Business type is required";
-      isValid = false;
-    }
+    // // Business type validation
+    // if (!formData?.businessType?.trim()) {
+    //   newErrors.businessType = "Business type is required";
+    //   isValid = false;
+    // }
 
     // Status validation
     if (!formData.status) {
@@ -207,16 +207,16 @@ function VendorsPage() {
               name: rowData.name,
               email: rowData.email,
               phoneNumber: rowData.phoneNumber,
-              businessName: rowData.businessName,
-              businessType: rowData.businessType,
+              // businessName: rowData.businessName,
+              // businessType: rowData.businessType,
               status: rowData.status,
             });
             setErrors({
               name: "",
               email: "",
               phoneNumber: "",
-              businessName: "",
-              businessType: "",
+              // businessName: "",
+              // businessType: "",
               status: "",
             });
             setDialogVisible(true);
@@ -273,16 +273,16 @@ function VendorsPage() {
               name: "",
               email: "",
               phoneNumber: "",
-              businessName: "",
-              businessType: "",
+              // businessName: "",
+              // businessType: "",
               status: "active",
             });
             setErrors({
               name: "",
               email: "",
               phoneNumber: "",
-              businessName: "",
-              businessType: "",
+              // businessName: "",
+              // businessType: "",
               status: "",
             });
             setDialogVisible(true);
@@ -300,8 +300,8 @@ function VendorsPage() {
         <Column field="name" header="Name" sortable />
         <Column field="email" header="Email" sortable />
         <Column field="phoneNumber" header="Phone" />
-        <Column field="businessName" header="Business Name" sortable />
-        <Column field="businessType" header="Business Type" />
+        {/* <Column field="businessName" header="Business Name" sortable />
+        <Column field="businessType" header="Business Type" /> */}
         <Column
           field="status"
           header="Status"
@@ -370,7 +370,7 @@ function VendorsPage() {
               <small className="p-error">{errors.phoneNumber}</small>
             )}
           </div>
-          <div className="field">
+          {/* <div className="field">
             <label htmlFor="businessName">Business Name</label>
             <InputText
               id="businessName"
@@ -407,7 +407,7 @@ function VendorsPage() {
             {errors.businessType && (
               <small className="p-error">{errors.businessType}</small>
             )}
-          </div>
+          </div> */}
           <div className="field">
             <label htmlFor="status">Status</label>
             <Dropdown

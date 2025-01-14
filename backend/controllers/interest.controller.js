@@ -1,14 +1,33 @@
 const Interest = require("../models/interest.model");
 const Application = require("../models/applications.model");
 const settings = require("../models/settings.model");
+const mongoose = require("mongoose");
+const InterestService = require("../services/interest.service");
 
 module.exports = {
+  calculateDailyInterest : async (req, res) => {
+    await InterestService.calculateDailyInterest();
+    res.json({
+      success: true,
+      message: "Interest details fetched successfully",
+      data: 'Interest calculated successfully',
+    });
+  },
+  calculateMonthlyInterest : async (req, res) => {
+    await InterestService.updateMonthlyPrincipal();
+    res.json({
+      success: true,
+      message: "Interest details fetched successfully",
+      data: 'Interest calculated successfully',
+    });
+  },
+
   // Get vendor's interest details
   getVendorInterest: async (req, res) => {
     try {
       const interest = await Interest.find({
         userID: req.user._id,
-      }).populate("applicationId");
+      }).populate("applicationId").sort({ _id: -1 });
 
       if (!interest) {
         return res.status(404).json({
@@ -69,7 +88,7 @@ module.exports = {
       const application = await Application.find({
         userID,
         status: "approved",
-      });
+      }).sort({ _id: -1 });
 
       const totalInvoiceAmount = application.reduce((acc, item) => {
         return acc + item.invoiceAmount;

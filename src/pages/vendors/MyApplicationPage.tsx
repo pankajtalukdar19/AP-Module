@@ -82,7 +82,7 @@ function MyApplicationPage() {
   const amountBodyTemplate = (rowData: any) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD",
+      currency: "INR",
     }).format(rowData.invoiceAmount);
   };
 console.log(pendingApplications);

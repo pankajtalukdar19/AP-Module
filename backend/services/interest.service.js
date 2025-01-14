@@ -75,9 +75,12 @@ class InterestService {
   
         await Promise.all([
           Interest.updateMany(
-            { userID: app.userID, accumulatedInterest: false },
-            { $set: { accumulatedInterest: true } },
-            { session }
+            { userID: app.userID, accumulatedInterest: false }, // Filter
+            { 
+              $set: { accumulatedInterest: true }, // Update fields
+              $inc: { calculatedInvoiceAmount: totalInterest } // Increment fields
+            },
+            { session } // Options (e.g., transaction session)
           ),
           Application.findByIdAndUpdate(
             app._id,

@@ -9,6 +9,6 @@ route.get("/:id", userController.getUserById);
 route.delete("/:userId", auth, userController.deleteUser);
 route.put("/:userId", auth, userController.updateUser);
 route.post("/forgot-password", userController.forgotPassword);
-route.post("/reset-password", userController.resetPassword);
+route.post("/reset-password",auth, userController.resetPassword);
 
 module.exports = route;

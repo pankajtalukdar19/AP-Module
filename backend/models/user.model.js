@@ -21,14 +21,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    businessName: {
-      type: String,
-      trim: true,
-    },
-    businessType: {
-      type: String,
-      trim: true,
-    },
+    // businessName: {
+    //   type: String,
+    //   trim: true,
+    // },
+    // businessType: {
+    //   type: String,
+    //   trim: true,
+    // },
     password: {
       type: String,
       required: true,

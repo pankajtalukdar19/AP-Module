@@ -128,10 +128,10 @@ function InterestPage() {
             sortable
           />
           <Column
-            field="applicationId.calculatedInvoiceAmount"
+            field="principalAmount"
             header="Principal Amount"
             body={(rowData) =>
-              amountTemplate(rowData.applicationId.calculatedInvoiceAmount)
+              amountTemplate(rowData.principalAmount)
             }
             sortable
           />
