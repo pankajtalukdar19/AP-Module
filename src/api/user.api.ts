@@ -24,6 +24,6 @@ export const userApi = {
   },
 
   changePassword: async (data: ChangePasswordRequest) => {
-    return await api.post<ApiResponse<void>>("/user/change-password", data);
+    return await api.post<ApiResponse<void>>("/user/reset-password", data);
   },
 };

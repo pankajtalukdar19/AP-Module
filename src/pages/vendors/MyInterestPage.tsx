@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Card } from "primereact/card";
 import { Toast } from "primereact/toast";
 import { interestApi } from "@/api/interest.api";
-import { formatDate } from "@/utils";
+import { formatTimestamp } from "@utils/index";
 
 function MyInterestPage() {
   const [interestDetail, setInterestDetail] = useState<any>(null);
@@ -23,6 +23,8 @@ function MyInterestPage() {
       const response = await interestApi.getVendorInterest();
       setInterestDetail(response.data.data);
     } catch (error) {
+
+      setInterestDetail(null);
       toast.current?.show({
         severity: "error",
         summary: "Error",
@@ -65,7 +67,7 @@ function MyInterestPage() {
           <Card className="bg-blue-50">
             <div className="text-xl mb-2">Invoice Amount</div>
             <div className="text-2xl font-bold">
-              {amountTemplate(interestSummary?.principalAmount || 0)}
+              {amountTemplate(interestSummary?.totalInvoiceAmount || 0)}
             </div>
           </Card>
         </div>
@@ -73,7 +75,7 @@ function MyInterestPage() {
           <Card className="bg-blue-50">
             <div className="text-xl mb-2">Principal Amount</div>
             <div className="text-2xl font-bold">
-              {amountTemplate(interestSummary?.calculatedInvoiceAmount || 0)}
+              {amountTemplate(interestSummary?.totalPrincipleAmount || 0)}
             </div>
           </Card>
         </div>
@@ -108,7 +110,7 @@ function MyInterestPage() {
         >
           <Column
             field="applicationId.invoiceAmount"
-            header="Invoice Amount"
+            header="Original Invoice Amount"
             body={(rowData) =>
               amountTemplate(rowData.applicationId.invoiceAmount)
             }
@@ -137,7 +139,7 @@ function MyInterestPage() {
           <Column
             field="lastCalculatedDate"
             header="Last Calculated"
-            body={(rowData) => formatDate(rowData.lastCalculatedDate)}
+            body={(rowData) => formatTimestamp(rowData.lastCalculatedDate)}
             sortable
           />
         </DataTable>
@@ -149,7 +151,7 @@ function MyInterestPage() {
           <div className="col-12 md:col-4">
             <div className="text-lg mb-2">Opening Balance</div>
             <div className="text-xl">
-              {amountTemplate(interestSummary?.calculatedInvoiceAmount || 0)}
+              {amountTemplate(interestSummary?.totalPrincipleAmount || 0)}
             </div>
           </div>
           <div className="col-12 md:col-4">
@@ -162,7 +164,7 @@ function MyInterestPage() {
             <div className="text-lg mb-2">Closing Balance</div>
             <div className="text-xl">
               {amountTemplate(
-                (interestSummary?.calculatedInvoiceAmount || 0) +
+                (interestSummary?.totalPrincipleAmount || 0) +
                   (interestSummary?.totalInterest || 0)
               )}
             </div>

@@ -10,13 +10,13 @@ class InterestService {
   }
 
   static async calculateDailyInterest() {
+    console.log("calculateDailyInterest function started");
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
       const currentDate = new Date();
-      const month = currentDate.getMonth() + 1;
-      const year = currentDate.getFullYear();
+      
 
       const applications = await Application.find({ status: "approved" });
       const interestsArray = applications.map((app) => ({
@@ -24,8 +24,8 @@ class InterestService {
         principalAmount: app.calculatedInvoiceAmount,
         interestRate: app.interestRate,
         dailyInterest: app.calculatedInvoiceAmount * app.interestRate,
-        month,
-        year,
+        month: currentDate.getMonth() + 1,
+        year: currentDate.getFullYear(),
         lastCalculatedDate: currentDate,
         applicationId: app._id,
       }));
@@ -41,28 +41,46 @@ class InterestService {
   }
 
   static async updateMonthlyPrincipal() {
+    console.log("updateMonthlyPrincipal function started");
+  
     const session = await mongoose.startSession();
     session.startTransaction();
-
+  
     try {
-      const applications = await Application.find({ status: "approved" });
-
+      const applications = await Application.find({ status: "approved" }).session(session);
+  
+      if (applications.length === 0) {
+        console.log("No approved applications found.");
+        await session.abortTransaction();
+        return;
+      }
+  
       for (const app of applications) {
         const interests = await Interest.find({
           userID: app.userID,
           accumulatedInterest: false,
-        });
-
+        }).session(session);
+  
+        if (interests.length === 0) {
+          console.log(`No interests found for user ${app.userID}.`);
+          continue;
+        }
+  
         const totalInterest = interests.reduce(
-          (sum, interest) => sum + interest.totalInterest,
+          (sum, interest) => sum + interest.dailyInterest,
           0
         );
-
+  
+        console.log(`Total interest for user ${app.userID}: ${totalInterest}`);
+  
         await Promise.all([
           Interest.updateMany(
-            { userID: app.userID, accumulatedInterest: false },
-            { $set: { accumulatedInterest: true } },
-            { session }
+            { userID: app.userID, accumulatedInterest: false }, // Filter
+            { 
+              $set: { accumulatedInterest: true }, // Update fields
+              $inc: { calculatedInvoiceAmount: totalInterest } // Increment fields
+            },
+            { session } // Options (e.g., transaction session)
           ),
           Application.findByIdAndUpdate(
             app._id,
@@ -71,15 +89,24 @@ class InterestService {
           ),
         ]);
       }
-
+  
       await session.commitTransaction();
+      console.log("Monthly principal update completed successfully.");
     } catch (error) {
       console.error("Error in monthly principal update:", error);
-      await session.abortTransaction();
+  
+      try {
+        await session.abortTransaction();
+        console.log("Transaction aborted.");
+      } catch (abortError) {
+        console.error("Error while aborting transaction:", abortError);
+      }
     } finally {
       session.endSession();
+      console.log("Session ended.");
     }
   }
+  
 }
 
 module.exports = InterestService;

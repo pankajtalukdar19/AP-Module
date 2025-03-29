@@ -3,7 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
-import { Password } from "primereact/password";
+// import { Password } from "primereact/password";
 import { userApi } from "@/api/user.api";
 import { useAppSelector } from "@/hooks/reduxHook";
 
@@ -220,7 +220,7 @@ function ProfilePage() {
             )}
           </div>
 
-          <div className="field">
+          {/* <div className="field">
             <label htmlFor="businessName">Business Name</label>
             <InputText
               id="businessName"
@@ -254,7 +254,7 @@ function ProfilePage() {
             {errors.businessType && (
               <small className="p-error">{errors.businessType}</small>
             )}
-          </div>
+          </div> */}
 
           <Button
             label="Save Changes"
@@ -264,7 +264,7 @@ function ProfilePage() {
         </div>
       </Card>
 
-      <Card title="Change Password">
+      {/* <Card title="Change Password">
         <div className="flex flex-column gap-3">
           <div className="field">
             <label htmlFor="currentPassword">Current Password</label>
@@ -343,7 +343,7 @@ function ProfilePage() {
             loading={saving}
           />
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 }

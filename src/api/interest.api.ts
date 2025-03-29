@@ -45,4 +45,10 @@ export const interestApi = {
   getInterestSummary: async () => {
     return await api.get<ApiResponse<InterestSummary>>("/interest/summary");
   },
+
+  getInterestAdminSummary: async () => {
+    return await api.get<ApiResponse<any>>(
+      "/interest/admin-summary"
+    );
+  },
 };

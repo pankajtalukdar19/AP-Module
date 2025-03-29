@@ -110,14 +110,7 @@ function ApplicationsPage() {
 
     return <Tag value={rowData.status} severity={severity[rowData.status]} />;
   };
-
-  const amountBodyTemplate = (rowData: Application) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(rowData.invoiceAmount);
-  };
-
+ 
   const calculatedAmountBodyTemplate = (rowData: Application) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -155,12 +148,6 @@ function ApplicationsPage() {
 
   const sharedColumns = [
     <Column
-      key="businessName"
-      field="userID.businessName"
-      header="Business Name"
-      sortable
-    />,
-    <Column
       key="vendorName"
       field="userID.name"
       header="Vendor Name"
@@ -171,7 +158,6 @@ function ApplicationsPage() {
       key="invoiceAmount"
       field="invoiceAmount"
       header="Invoice Amount"
-      body={amountBodyTemplate}
       sortable
     />,
     <Column

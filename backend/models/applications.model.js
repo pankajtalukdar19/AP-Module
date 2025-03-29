@@ -40,8 +40,10 @@ const application = mongoose.Schema(
       match: /.+\@.+\..+/,
     },
     calculatedInvoiceAmount: {
-      type: Number,
-      required: true,
+      type: Number, 
+    },
+    invoiceCopy: {
+      type: String,
     },
     department: {
       type: String,
@@ -54,9 +56,11 @@ const application = mongoose.Schema(
     },
     partialRatio1: {
       type: Number,
+      default: null, // Allows null if not provided
     },
     partialRatio2: {
       type: Number,
+      default: null, // Allows null if not provided
     },
     approvedDate: {
       type: Date,

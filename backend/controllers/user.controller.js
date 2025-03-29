@@ -14,7 +14,7 @@ module.exports = {
         req.body;
       let password = req.body?.password;
       if (!req.body?.password) {
-        password = "12345678";
+        password = "123456";
       }
 
       if (!email || !name || !password) {

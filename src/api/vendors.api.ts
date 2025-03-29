@@ -6,8 +6,8 @@ interface Vendor {
   name: string;
   email: string;
   phoneNumber: string;
-  businessName: string;
-  businessType: string;
+  // businessName: string;
+  // businessType: string;
   status: "active" | "inactive" | "suspended";
 }
 
@@ -15,8 +15,8 @@ interface CreateVendorRequest {
   name: string;
   email: string;
   phoneNumber: string;
-  businessName: string;
-  businessType: string;
+  // businessName: string;
+  // businessType: string;
 }
 
 export const vendorsApi = {

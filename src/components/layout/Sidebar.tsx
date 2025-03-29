@@ -6,8 +6,6 @@ import { menuConfig } from "@/config/menu.config";
 import { Sidebar as PrimeSidebar } from "primereact/sidebar";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { config } from "@/config";
-import { Image } from "primereact/image";
 
 interface SidebarProps {
   isCollapsed: boolean;
